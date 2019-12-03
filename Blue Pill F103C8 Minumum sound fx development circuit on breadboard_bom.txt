@@ -1,0 +1,9 @@
+C1	Electrolytic Capacitor	capacitance 1uF; 6.3V
+C2	Electrolytic Capacitor	capacitance 1uF; 6.3V
+C3	Ceramic Capacitor	capacitance 6.8nF; 6.3V
+C4	Electrolytic Polymer Capacitor	100uF; 6.3V
+C5	Electrolytic Polymer Capacitor	100uF; 6.3V
+R1	3.9kohm Resistor	1%;
+R2	1Mohm Resistor	1%;
+part2	USB converter CP2102
+part3	Blue Pill STM32F103C8
