@@ -1,2 +1,2 @@
 # BPFX
-Minimum sound effect development on breadboard.
+Blue Pill F103C8 - Minimum sound effect development on breadboard.
