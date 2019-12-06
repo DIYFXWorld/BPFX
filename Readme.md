@@ -1,4 +1,4 @@
-# BPFX Blue Pill STM32F103C8 - Minimum sound effect development on breadboard.
+# BPFX Blue Pill STM32F103C8 - Minimum sound FX development on breadboard.
 
 Coming soon.
 
