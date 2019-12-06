@@ -8,13 +8,12 @@ Sample FX - Part 1
 
 -Delay  
 -Anlog Delay  
--Reverse Delay  
 -Delay(ADPCM Endode)  
 -2 Tap Delay(ADPCM Endoce)  
+-Reverse Delay  
+-Reverse Delay(PCMU)  
 -Modulation Delay  
 -Chorus  
 -Flanger  
 -Phaser  
--Tremolo  
--Ring Modulator  
 -Reverb  
