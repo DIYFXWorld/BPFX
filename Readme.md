@@ -17,3 +17,5 @@ Sample FX - Part 1
 -Flanger  
 -Phaser  
 -Reverb  
+
+switch any one.
