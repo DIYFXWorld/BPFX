@@ -4,7 +4,7 @@
 -Output ... Mono  
 -Control ... UART from PC  
 
-Sample FX - Part 1
+--- Sample FX - Part 1 ---
 
 -Delay  
 -Anlog Delay  
