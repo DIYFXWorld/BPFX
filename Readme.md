@@ -11,7 +11,7 @@
 -Delay(ADPCM Endode)  
 -2 Tap Delay(ADPCM Endoce)  
 -Reverse Delay  
--Reverse Delay(PCMU)  
+-Reverse Delay(PCMU Endoce)  
 -Modulation Delay  
 -Chorus  
 -Flanger  
