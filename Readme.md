@@ -22,4 +22,4 @@ switch any one.
 
 <img src="https://github.com/DIYFXWorld/BPFX/blob/master/photo_2.jpg" width=200><img src="https://github.com/DIYFXWorld/BPFX/blob/master/layout_2.png" width=200><img src="https://github.com/DIYFXWorld/BPFX/blob/master/schematic.png" width=200>
 
-See also the wiki at the top of this page!!!
+<a href=https://github.com/DIYFXWorld/BPFX/wiki>See also the wiki at the top of this page.</a>
