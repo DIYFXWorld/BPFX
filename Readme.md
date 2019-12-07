@@ -19,3 +19,7 @@
 -Reverb  
 
 switch any one.
+
+<img src="https://github.com/DIYFXWorld/BPFX/blob/master/schematic.png" width=300>
+
+See also the wiki at the top of this page!!!
