@@ -20,6 +20,8 @@
 
 switch any one.
 
+<img src="https://github.com/DIYFXWorld/BPFX/blob/master/photo_2.jpg" width=300>
+<img src="https://github.com/DIYFXWorld/BPFX/blob/master/layout__2.png" width=300>
 <img src="https://github.com/DIYFXWorld/BPFX/blob/master/schematic.png" width=300>
 
 See also the wiki at the top of this page!!!
