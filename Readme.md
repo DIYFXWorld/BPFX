@@ -1,4 +1,4 @@
-# BPFX Blue Pill STM32F103C8 - Minimum sound FX development on breadboard.
+# BPFX Blue Pill STM32F103C8 - Minimum sound FX development environment on breadboard.
 
 -Input ... Mono  
 -Output ... Mono  
