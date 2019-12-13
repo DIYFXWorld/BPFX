@@ -25,8 +25,9 @@ struct Audio
 	static void Set_Output( int );
 	static void Set_Output( int, int );
 
-	static void Active() 	{ --Lock_Counter; }
+	static void Active() 		{ --Lock_Counter; }
 	static void Inactive()	{ ++Lock_Counter; }
+	static bool Is_Active()	{ return ( Lock_Counter == 0 ); }
 };
 
 #endif

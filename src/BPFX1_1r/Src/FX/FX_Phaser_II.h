@@ -9,8 +9,8 @@
 #include <Q15T_BQF.h>
 #include <Q15T_LFO.h>
 
-constexpr BQF_Param FX_Phaser_II_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
-constexpr BQF_Param FX_Phaser_II_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Phaser_II_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Phaser_II_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
 
 struct FX_Phaser_II : public FX_Interface
 {

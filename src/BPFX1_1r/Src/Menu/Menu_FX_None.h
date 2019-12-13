@@ -1,7 +1,7 @@
 #ifndef Menu_FX_None_H_
 #define Menu_FX_None_H_
 
-#include	"..\FX_Process.h"
+#include	"FX_Process.h"
 #include	"FX_None.h"
 #include	"Menu_Interface.h"
 #include	"vcp_mini.h"

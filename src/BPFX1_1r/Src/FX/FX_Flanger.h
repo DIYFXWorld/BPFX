@@ -10,7 +10,8 @@
 #include <Q15T_LFO.h>
 #include "Chorus_Buffer.h"
 
-constexpr BQF_Param FX_Flanger_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+//constexpr Q15T_BQF_Param FX_Flanger_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Flanger_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 1.0f );
 
 struct FX_Flanger : public FX_Interface
 {
@@ -19,20 +20,20 @@ struct FX_Flanger : public FX_Interface
 
 	Chorus_Buffer				Buffer;
 	Q15T_LFO_Sin				LFO;
-	Volume<Curve_H>			Rate;
+	Volume<Curve_D>			Rate;
+	Volume<Curve_D>			Depth;
 	Volume<Curve_H>			Delay_Time;
-	Volume<Curve_F>			Depth;
-	Volume<Curve_E>			Feedback;
+	Volume<Curve_B>			Feedback;
 	Volume<Curve_B>			Mix_Level;
 
-	Q15T_BQF						LPF_0, LPF_1;
+	Q15T_BQF						LPF;
 
 	FX_Flanger() :
 		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
 		LFO( _FS_ )
 	{
-		LPF_0 = FX_Flanger_LPF_Param;
-		LPF_1 = FX_Flanger_LPF_Param;
+		LPF = FX_Flanger_LPF_Param;
+  	Mix_Level.Set_Value( UINT12_MAX );
 	}
 
 	void Destroy() { delete this; }
@@ -43,8 +44,8 @@ struct FX_Flanger : public FX_Interface
 
 		// Set Rate
 		{
-			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 2 ,UINT12_MAX );
-			LFO.Set_Rate( Fraction( v, 300 ) );
+			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 41 ,UINT12_MAX );
+			LFO.Set_Rate( Fraction( v, 409 ) );
 		}
 
 		int	DEPTH				= Depth.Per( DEPTH_BUFFER_LENGTH );
@@ -59,13 +60,11 @@ struct FX_Flanger : public FX_Interface
 
 		output = LIMIT_INT16( output );
 
-		output = LPF_1.Process( output );
-
-		int	fb = input - Feedback.Per( output );
+		int	fb = input + Feedback.Per( output );
 
 		fb = Limit( -10000, fb, 10000 );
 
-		fb = LPF_0.Process( fb );
+		fb = LPF.Process( fb );
 
 		Buffer.Set_Value( fb );
 
@@ -100,8 +99,7 @@ struct FX_Flanger : public FX_Interface
 		Mix_Level.Fast_Forward();
 		Buffer.Memory.Reset();
 		LFO.Reset();
-		LPF_0.Reset();
-		LPF_1.Reset();
+		LPF.Reset();
 	}
 };
 

@@ -1,7 +1,7 @@
 #ifndef MENU_DELAY_0_H
 #define MENU_DELAY_0_H
 
-#include "../FX_Process.h"
+#include "FX_Process.h"
 #include <Myutil.h>
 #include <Menu_Interface.h>
 #include <vcp_mini.h>

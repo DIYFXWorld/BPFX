@@ -1,7 +1,7 @@
 #ifndef MENU_DELAY_PCMU_H_
 #define MENU_DELAY_ADPCM_H_
 
-#include	"..\FX_Process.h"
+#include	"FX_Process.h"
 #include	"Myutil.h"
 #include	"Menu_Interface.h"
 

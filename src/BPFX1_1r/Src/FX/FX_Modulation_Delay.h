@@ -10,7 +10,7 @@
 #include <Q15T_LFO.h>
 #include <Chorus_Buffer.h>
 
-constexpr BQF_Param FX_Modulation_Delay_LPF_Param = BQF_Builder( _FS_ ).LPF( 5000.f, 1.f );
+constexpr Q15T_BQF_Param FX_Modulation_Delay_LPF_Param = BQF_Builder( _FS_ ).LPF( 5000.f, 1.f );
 
 struct FX_Modulation_Delay : public FX_Interface
 {

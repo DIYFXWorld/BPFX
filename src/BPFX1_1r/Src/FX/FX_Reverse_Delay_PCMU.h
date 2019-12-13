@@ -10,7 +10,7 @@
 #include <Reverse_Delay_Buffer_PCMU.h>
 #include <Mute.h>
 
-constexpr BQF_Param FX_Revese_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Revese_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
 
 struct FX_Reverse_Delay_PCMU : public FX_Interface
 {

@@ -1,12 +1,3 @@
-#include	"VCP_mini.h"
-#include	<ctype.h>
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-
-extern UART_HandleTypeDef huart1;
-#define	HANDLE	huart1
-
 const int STRING_BUFFER_SIZE = 21;
 
 /*
@@ -21,6 +12,7 @@ static void READ( char *ptr )
 	}
 }
 */
+
 static void WRITE( const char *ptr, int len )
 {
 	HAL_UART_Transmit( &HANDLE, (uint8_t*)ptr, len, 0xFFFF );

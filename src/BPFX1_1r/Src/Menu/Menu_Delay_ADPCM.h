@@ -1,7 +1,7 @@
 #ifndef MENU_DELAY_ADPCM_H_
 #define MENU_DELAY_ADPCM_H_
 
-#include	"..\FX_Process.h"
+#include	"FX_Process.h"
 #include	"Myutil.h"
 #include	"Menu_Interface.h"
 
@@ -59,7 +59,7 @@ struct Menu_Delay_ADPCM : public Menu_Interface
 
 	virtual void Print_Caption()
 	{
-		print( "Delay(ADPCM/fx10kHz)" );
+		print( "Delay(ADPCM/fc10kHz)" );
 	}
 };
 

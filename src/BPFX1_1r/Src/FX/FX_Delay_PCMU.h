@@ -9,7 +9,7 @@
 #include <Q15T_BQF.h>
 #include <Delay_PCMU_Buffer.h>
 
-constexpr BQF_Param FX_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
 
 struct FX_Delay_PCMU : public FX_Interface
 {

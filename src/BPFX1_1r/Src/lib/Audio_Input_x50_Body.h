@@ -64,11 +64,14 @@ extern "C" void HAL_ADC_ConvCpltCallback( ADC_HandleTypeDef* hadc )
 
 void Audio::Input_Start()
 {
-#ifndef	STM32F411xE
-#ifndef	STM32F401xC
+#if defined(STM32F103xB)
 	if( HAL_ADCEx_Calibration_Start( &AUDIO_INPUT_HADC ) != HAL_OK )
     Error_Handler();
 #endif
+
+#if	defined(STM32F303xC)
+	if( HAL_ADCEx_Calibration_Start( &AUDIO_INPUT_HADC, ADC_SINGLE_ENDED ) != HAL_OK )
+    Error_Handler();
 #endif
 
   if( HAL_ADC_Start_DMA( &AUDIO_INPUT_HADC, ( uint32_t* )DMA_Buffer, DMA_Buffer_Length ) != HAL_OK )
@@ -80,5 +83,5 @@ void Audio::Input_Start()
 
 __weak void Audio_Invalid_Callback( int )
 {
-  Audio::Set_Output( 0 );
+	Audio::Set_Output( 0 );
 }

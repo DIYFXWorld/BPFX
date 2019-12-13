@@ -10,8 +10,8 @@
 #include <Q15T_LFO.h>
 #include <Chorus_Buffer.h>
 
-constexpr BQF_Param FX_Chorus_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
-constexpr BQF_Param FX_Chorus_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Chorus_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Chorus_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
 
 struct FX_Chorus : public FX_Interface
 {
@@ -45,8 +45,8 @@ struct FX_Chorus : public FX_Interface
 
 		// Set Rate
 		{
-			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 27, UINT12_MAX );
-			LFO.Set_Rate( Fraction( v, 273 ) );
+			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 41, UINT12_MAX );
+			LFO.Set_Rate( Fraction( v, 409 ) );
 		}
 
 		int	DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );

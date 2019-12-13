@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=E:/workspace/BPFX/BPFX_VCP_TEST_8/Inc
+HeaderPath=E:/workspace/BPFX/BPFX1_1/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=E:/workspace/BPFX/BPFX_VCP_TEST_8/Src
+SourcePath=E:/workspace/BPFX/BPFX1_1/Src
 SourceFiles=stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

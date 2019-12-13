@@ -10,8 +10,8 @@
 #include <Delay_ADPCM_Buffer.h>
 #include <FX_Config.h>
 
-constexpr BQF_Param FX_Delay_ADPCM_LPF_Param   = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-constexpr BQF_Param FX_Delay_ADPCM_LPF_Param_2 = BQF_Builder( _FS_/2 ).LPF(  8000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Delay_ADPCM_LPF_Param   = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Delay_ADPCM_LPF_Param_2 = BQF_Builder( _FS_/2 ).LPF(  8000.f, 0.75f );
 
 struct FX_Delay_ADPCM : public FX_Interface
 {

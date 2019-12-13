@@ -9,7 +9,12 @@ struct FX_None : public FX_Interface
 
 	void Destroy() { delete this; }
 
-	int Process( int ) { return 0; }
+	int Process( int )
+	{
+//		for( auto i( 0 ); i < 140; ++i )
+//			asm( "NOP" );
+		return 0;
+	}
 
 	void Reset() {}
 

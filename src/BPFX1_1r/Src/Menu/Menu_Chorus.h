@@ -1,7 +1,7 @@
 #ifndef MENU_Chorus_H_
 #define MENU_Chorus_H_
 
-#include	"../FX_Process.h"
+#include	"FX_Process.h"
 #include	"Myutil.h"
 #include	"Menu_Interface.h"
 #include	"vcp_mini.h"

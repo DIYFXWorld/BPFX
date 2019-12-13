@@ -9,7 +9,7 @@
 #include <Q15T_BQF.h>
 #include <Delay_Buffer.h>
 
-static constexpr	BQF_Param FX_Delay_0_LPF_Param = BQF_Builder( _FS_ ).LPF( 20000.f, 0.75f );
+static constexpr	Q15T_BQF_Param FX_Delay_0_LPF_Param = BQF_Builder( _FS_ ).LPF( 20000.f, 0.75f );
 
 struct FX_Delay_0 : public FX_Interface
 {

@@ -18,8 +18,8 @@ const Q15T 	Offset_Room		( 0.7f );
 const Q15T	Initial_Room	( 0.5f );
 const Q15T 	Initial_Damp	( 0.1f );
 
-constexpr BQF_Param FX_Reverb_LPF_Param	= BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-constexpr BQF_Param FX_Reverb_Dip_Param	= BQF_Builder( _FS_/2 ).PK( 450.f, 0.75f, -10 );
+constexpr Q15T_BQF_Param FX_Reverb_LPF_Param	= BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Reverb_Dip_Param	= BQF_Builder( _FS_/2 ).PK( 450.f, 0.75f, -10 );
 
 class FX_Reverb : public FX_Interface
 {
