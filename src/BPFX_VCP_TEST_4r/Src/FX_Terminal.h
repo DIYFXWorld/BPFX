@@ -11,4 +11,4 @@ void Set_Time( int v );
 void Set_Feedback( int v );
 void Set_Mix_Level( int v );
 
-#endif 
+#endif /* FX_TERMINAL_H_ */
