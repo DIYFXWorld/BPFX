@@ -1,10 +1,3 @@
-/*
- * Menu.h
- *
- *  Created on: 2019/06/24
- *      Author: gamenyge
- */
-
 #ifndef MENU_H_
 #define MENU_H_
 

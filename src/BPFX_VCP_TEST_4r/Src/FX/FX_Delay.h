@@ -1,9 +1,3 @@
-/*
- * FX_Delay.h
- *
- *  Created on: 2018/04/06
- *      Author: gamenyge
- */
 #ifndef	FX_Delay_h
 #define	FX_Delay_h
 

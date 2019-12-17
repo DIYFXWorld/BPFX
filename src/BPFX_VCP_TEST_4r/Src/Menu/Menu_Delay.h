@@ -1,10 +1,3 @@
-/*
- * Menu_Delay.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_DELAY_H_
 #define MENU_DELAY_H_
 

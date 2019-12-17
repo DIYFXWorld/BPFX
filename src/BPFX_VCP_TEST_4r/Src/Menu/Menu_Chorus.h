@@ -1,10 +1,3 @@
-/*
- * Menu_Chorus.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Chorus_H_
 #define MENU_Chorus_H_
 

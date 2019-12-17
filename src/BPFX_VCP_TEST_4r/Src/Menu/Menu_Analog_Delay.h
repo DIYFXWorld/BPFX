@@ -1,10 +1,3 @@
-/*
- * Menu_Analog_Delay.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Analog_DELAY_H_
 #define MENU_Analog_DELAY_H_
 

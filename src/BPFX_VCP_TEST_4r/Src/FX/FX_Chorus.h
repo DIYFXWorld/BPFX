@@ -1,10 +1,3 @@
-/*
- * FX_Chorus.h
- *
- *  Created on: 2019/02/22
- *      Author: ganymede
- */
-
 #ifndef FX_CHORUS_H_
 #define FX_CHORUS_H_
 

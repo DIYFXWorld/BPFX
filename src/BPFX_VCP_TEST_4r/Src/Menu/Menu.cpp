@@ -1,9 +1,3 @@
-/*
- * Menu.cpp
- *
- *  Created on: 2019/06/24
- *      Author: gamenyge
- */
 #include	"Menu.h"
 #include	<stdio.h>
 #include	<list>

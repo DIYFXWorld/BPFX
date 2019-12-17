@@ -1,10 +1,3 @@
-/*
- * Menu_Reverb.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Reverb_H_
 #define MENU_Reverb_H_
 

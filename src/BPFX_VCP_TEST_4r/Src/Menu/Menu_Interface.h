@@ -1,9 +1,3 @@
-/*
- * Menu_Interface.h
- *
- *  Created on: 2019/06/24
- *      Author: gamenyge
- */
 #ifndef	Menu_Interface_h
 #define	Menu_Interface_h
 

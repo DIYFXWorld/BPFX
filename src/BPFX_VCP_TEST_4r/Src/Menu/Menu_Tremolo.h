@@ -1,10 +1,3 @@
-/*
- * Menu_Tremolo.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Tremolo_H_
 #define MENU_Tremolo_H_
 

@@ -1,9 +1,3 @@
-/*
- * FX_Delay.h
- *
- *  Created on: 2018/04/06
- *      Author: gamenyge
- */
 #ifndef	FX_Analog_Delay_h
 #define	FX_Analog_Delay_h
 

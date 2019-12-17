@@ -1,9 +1,3 @@
-/*
- * FX_Process.cpp
- *
- *  Created on: 2019/03/19
- *      Author: gamenyge
- */
 #include	"hal.h"
 #include	"Audio.h"
 #include	"FX_Process.h"

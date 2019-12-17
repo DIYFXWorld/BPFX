@@ -1,10 +1,3 @@
-/*
- * Menu_Flanger.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Flanger_H_
 #define MENU_Flanger_H_
 

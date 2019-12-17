@@ -1,10 +1,3 @@
-/*
- * FX_Phaser.h
- *
- *  Created on: 2019/03/19
- *      Author: gamenyge
- */
-
 #ifndef FX_PHASER_II_H_
 #define FX_PHASER_II_H_
 

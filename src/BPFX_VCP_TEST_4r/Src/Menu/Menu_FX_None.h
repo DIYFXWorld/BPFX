@@ -1,10 +1,3 @@
-/*
- * Menu_FX_None.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef Menu_FX_None_H_
 #define Menu_FX_None_H_
 

@@ -1,10 +1,3 @@
-/*
- * Menu_Phaser.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Phaser_H_
 #define MENU_Phaser_H_
 

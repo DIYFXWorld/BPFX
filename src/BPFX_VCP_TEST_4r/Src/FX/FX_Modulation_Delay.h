@@ -1,10 +1,3 @@
-/*
- * FX_Madulation_Delay.h
- *
- *  Created on: 2019/02/22
- *      Author: ganymede
- */
-
 #ifndef FX_MODULATION_DELAY_H_
 #define FX_MODULATION_DELAY_H_
 

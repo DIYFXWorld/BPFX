@@ -1,10 +1,3 @@
-/*
- * Line_Editor.h
- *
- *  Created on: 2017/03/04
- *      Author: gamenyge
- */
-
 #ifndef Line_Editor_H_
 #define Line_Editor_H_
 

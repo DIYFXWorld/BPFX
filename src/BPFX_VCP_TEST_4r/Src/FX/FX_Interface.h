@@ -1,10 +1,3 @@
-/*
- * FX_Base.h
- *
- *  Created on: 2019/04/28
- *      Author: gamenyge
- */
-
 #ifndef FX_Interface_H_
 #define FX_Interface_H_
 

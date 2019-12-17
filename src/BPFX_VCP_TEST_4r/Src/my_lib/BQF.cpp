@@ -1,10 +1,3 @@
-/*
- * BQF.h
- *
- *  Created on: 2019/06/12
- *      Author: gamenyge
- */
-
 #include	"BQF.h"
 #include	<math.h>
 

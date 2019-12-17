@@ -1,10 +1,3 @@
-/*
- * Menu_Ring_Modulation.h
- *
- *  Created on: Jun 26, 2019
- *      Author: gamenyge
- */
-
 #ifndef MENU_Ring_Modulation_H_
 #define MENU_Ring_Modulation_H_
 

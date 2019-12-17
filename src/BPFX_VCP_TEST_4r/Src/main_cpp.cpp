@@ -1,10 +1,3 @@
-/*
- * sub_main.cpp
- *
- *  Created on: 2017/04/30
- *      Author: gamenyge
- */
-
 #include	"main.h"
 #include	"hal.h"
 #include	"Audio.h"

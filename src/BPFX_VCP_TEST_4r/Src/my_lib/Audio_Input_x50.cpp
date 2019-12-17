@@ -1,10 +1,3 @@
-/*
- * Audio.c
- *
- *  Created on: 2017/03/10
- *      Author: gamenyge
- */
-
 #include	"Audio.h"
 #include	"hal.h"
 #include	"hal_adc.h"

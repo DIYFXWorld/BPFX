@@ -1,10 +1,3 @@
-/*
- * FX_Process.h
- *
- *  Created on: 2019/03/19
- *      Author: gamenyge
- */
-
 #ifndef FX_PROCESS_H_
 #define FX_PROCESS_H_
 

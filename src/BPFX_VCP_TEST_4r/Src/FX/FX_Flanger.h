@@ -1,10 +1,3 @@
-/*
- * FX_Flanger.h
- *
- *  Created on: 2019/02/22
- *      Author: ganymede
- */
-
 #ifndef FX_FLANGER_H_
 #define FX_FLANGER_H_
 

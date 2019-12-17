@@ -1,9 +1,3 @@
-/*
- * FX_None.h
- *
- *  Created on: 2018/04/06
- *      Author: gamenyge
- */
 #ifndef	FX_None_h
 #define	FX_None_h
 

@@ -1,10 +1,3 @@
-/*
- * Terminal_Control.cpp
- *
- *  Created on: 2019/01/26
- *      Author: gamenyge
- */
-
 #include	<stdio.h>
 #include	<ctype.h>
 #include	"Line_Editor.h"
