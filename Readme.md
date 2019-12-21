@@ -4,21 +4,23 @@
 -Output ... Mono  
 -Control ... UART from PC  
 
---- Sample FX - Part 1 ---
+--- Sample FX - Part 1 (switch any one)---
 
 -Delay  
--Anlog Delay  
+-Delay(PCMU Endode)  
 -Delay(ADPCM Endode)  
--2 Tap Delay(ADPCM Endoce)  
+-Anlog Delay  
 -Reverse Delay  
--Reverse Delay(PCMU Endoce)  
 -Modulation Delay  
+
+--- Sample FX - Part 2 (switch any one)---
+
 -Chorus  
 -Flanger  
 -Phaser  
 -Reverb  
-
-switch any one.
+-Tremolo  
+-Ring Modulation  
 
 <img src="https://github.com/DIYFXWorld/BPFX/blob/master/photo_2.jpg" width=200><img src="https://github.com/DIYFXWorld/BPFX/blob/master/layout_2.png" width=200><img src="https://github.com/DIYFXWorld/BPFX/blob/master/schematic.png" width=200>
 
