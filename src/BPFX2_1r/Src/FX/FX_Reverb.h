@@ -102,8 +102,6 @@ public:
 		Dip   = FX_Reverb_Dip_Param;
 	}
 
-	void Destroy(){ delete this; }
-
 	void Set_Room_Size( const Q15T& v )
 	{
 		Q15T w = Mul_64( v, Scale_Room ) + Offset_Room;
@@ -139,7 +137,7 @@ public:
 				Combs[ i ].Set_Feedback( v );
 		}
 
-		m_input		= Dip.Process( m_input );
+		m_input		= Dip( m_input );
 		m_input 	= ( Gain * m_input ).to_int();
 		m_output	=  0;
 
@@ -170,11 +168,11 @@ public:
 
 	int Process( int input )
 	{
-		input = LPF_0.Process( input );
+		input = LPF_0( input );
 
-		int output = Sub_Process.Do( input );
+		int output = Sub_Process( input );
 
-		output = LPF_1.Process( output );
+		output = LPF_1( output );
 
 		return output;
 	}

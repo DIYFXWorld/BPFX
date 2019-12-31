@@ -1,5 +1,5 @@
-#ifndef FX_PHASER_II_H_
-#define FX_PHASER_II_H_
+#ifndef FX_PHASER_H_
+#define FX_PHASER_H_
 
 #include <FX_Config.h>
 #include <Myutil.h>
@@ -9,10 +9,10 @@
 #include <Q15T_BQF.h>
 #include <Q15T_LFO.h>
 
-constexpr Q15T_BQF_Param FX_Phaser_II_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Phaser_II_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Phaser_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
+constexpr Q15T_BQF_Param FX_Phaser_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
 
-struct FX_Phaser_II : public FX_Interface
+struct FX_Phaser : public FX_Interface
 {
 	class Allpass_Delay
 	{
@@ -29,7 +29,7 @@ struct FX_Phaser_II : public FX_Interface
 			_a1 = ( Q15T_1 - delay ) / ( Q15T_1 + delay );
     }
 
-		int Update( const int& inSamp )
+		int operator()( const int& inSamp )
 		{
 			int	y = ( ( _a1 * -1 ) * inSamp + _zm1 ).to_int();
 
@@ -54,7 +54,7 @@ struct FX_Phaser_II : public FX_Interface
 	Q15T_BQF					HPF, LPF;
 	uint8_t						num_APF;
 
-	FX_Phaser_II() :
+	FX_Phaser() :
 		_fb( 0.2f ),
     _depth( 1.f ),
     _zm1( 0 ),
@@ -62,13 +62,11 @@ struct FX_Phaser_II : public FX_Interface
 		num_APF( 6 )
 	{
   	Set_Range( Q15T( 200 ), Q15T( 1600 ) );
-		HPF = FX_Phaser_II_HPF_Param;
-		LPF = FX_Phaser_II_LPF_Param;
+		HPF = FX_Phaser_HPF_Param;
+		LPF = FX_Phaser_LPF_Param;
   	Mix_Level.Set_Value( UINT12_MAX*7/10 );
 		Reset();
   }
-
-	void Destroy() { delete this; }
 
   void Set_Range( const Q15T& min, const Q15T& max )	 // Hz
 	{
@@ -78,7 +76,7 @@ struct FX_Phaser_II : public FX_Interface
 
 	int Process( int inSamp )
 	{
-		inSamp = HPF.Process( inSamp );
+		inSamp = HPF( inSamp );
 
 		// Set Rate
 		{
@@ -107,8 +105,7 @@ struct FX_Phaser_II : public FX_Interface
     		_alps[ i ].Delay( d );
     	}
 
-    	y =	_alps[ 0 ].Update(
-    			_alps[ 1 ].Update( ( ( _fb * _zm1 ) + inSamp ).to_int() ) );
+    	y =	_alps[ 0 ](	_alps[ 1 ]( ( ( _fb * _zm1 ) + inSamp ).to_int() ) );
     }
     else if( num_APF == 4 )
     {
@@ -117,10 +114,7 @@ struct FX_Phaser_II : public FX_Interface
     		_alps[ i ].Delay( d );
     	}
 
-    	y =	_alps[ 0 ].Update(
-    			_alps[ 1 ].Update(
-    			_alps[ 2 ].Update(
-    			_alps[ 3 ].Update( ( ( _fb * _zm1 ) + inSamp ).to_int() ) ) ) );
+    	y =	_alps[ 0 ](	_alps[ 1 ](	_alps[ 2 ](	_alps[ 3 ]( ( ( _fb * _zm1 ) + inSamp ).to_int() ) ) ) );
     }
     else if( num_APF == 6 )
     {
@@ -129,12 +123,7 @@ struct FX_Phaser_II : public FX_Interface
     		_alps[ i ].Delay( d );
     	}
 
-    	y =	_alps[ 0 ].Update(
-    			_alps[ 1 ].Update(
-    			_alps[ 2 ].Update(
-    			_alps[ 3 ].Update(
-    			_alps[ 4 ].Update(
-    			_alps[ 5 ].Update( ( ( _fb * _zm1 ) + inSamp ).to_int() ) ) ) ) ) );
+    	y =	_alps[ 0 ](	_alps[ 1 ](	_alps[ 2 ](	_alps[ 3 ](	_alps[ 4 ](	_alps[ 5 ](	( ( _fb * _zm1 ) + inSamp ).to_int() ) ) ) ) ) );
     }
   	_zm1 = y;
 
@@ -142,7 +131,7 @@ struct FX_Phaser_II : public FX_Interface
 
 		wet = LIMIT_INT16( wet );
 
-		wet = LPF.Process( wet );
+		wet = LPF( wet );
 
 		return wet;
 	}
@@ -164,10 +153,6 @@ struct FX_Phaser_II : public FX_Interface
 
 	virtual FX_ID Get_FX_ID() const	{ return FX_ID_Phaser; }
 
-	void Reset_Controls()
-	{
-	}
-	
 	void Reset()
 	{
 	}

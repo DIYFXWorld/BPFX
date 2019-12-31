@@ -37,11 +37,9 @@ struct FX_Chorus_0 : public FX_Interface
 		Reset();
 	}
 
-	void Destroy() { delete this; }
-
 	int Process( int input )
 	{
-		input = HPF.Process( input );
+		input = HPF( input );
 
 		// Set Rate
 		{
@@ -61,7 +59,7 @@ struct FX_Chorus_0 : public FX_Interface
 
 		output = LIMIT_INT16( output );
 
-		output = LPF.Process( output );
+		output = LPF( output );
 
 		output =  Mix_Level.Per( output );
 

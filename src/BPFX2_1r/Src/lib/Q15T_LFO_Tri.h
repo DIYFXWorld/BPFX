@@ -5,11 +5,11 @@
 #include "Fraction.h"
 
 #ifndef	Q15T_32767
-	const	Q15T	Q15T_32767 (  32767 );
+	constexpr	Q15T	Q15T_32767 (  32767 );
 #endif
 
 #ifndef	Q15T_32768M
-	const	Q15T	Q15T_32768M( -32768 );
+	constexpr	Q15T	Q15T_32768M( -32768 );
 #endif
 
 struct Q15T_LFO_Tri

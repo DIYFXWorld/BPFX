@@ -77,3 +77,67 @@ struct Fixed_Array
 };
 #endif
 
+#include	"Memory_Pool.h"
+
+#ifndef	Array_Pool_h
+#define	Array_Pool_h
+
+template <typename T>
+struct Array_Pool
+{
+	T*				Pointer;
+	uint32_t	Length;
+
+	Array_Pool():
+		Pointer( 0 ),
+		Length( 0 )
+	{
+	}
+
+	Array_Pool( uint32_t length ):
+		Pointer( 0 ),
+		Length( length )
+	{
+		Create( Length );
+	}
+
+	~Array_Pool()
+	{
+		Destroy();
+	}
+
+	void Destroy()
+	{
+		if( Pointer )	__Free__( Pointer );
+		Pointer = 0;
+	}
+
+	void Create( uint32_t length )
+	{
+		if( length )
+		{
+			Destroy();
+			Length = length;
+			Pointer = ( T* )__Malloc__( sizeof( T ) * Length );
+		}
+	}
+
+	void Reset( const T& v = T() )
+	{
+		uint32_t	i( Length - 1 );
+
+		while( i )
+		{
+			Pointer[ i ] = v;
+			--i;
+		}
+
+		Pointer[ 0 ] = v;
+	}
+
+	      T& operator [] ( int i )       { return Pointer[ i ]; }
+	const T& operator [] ( int i ) const { return Pointer[ i ]; }
+};
+
+#endif
+

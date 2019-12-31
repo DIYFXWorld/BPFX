@@ -36,8 +36,6 @@ struct FX_Flanger : public FX_Interface
   	Mix_Level.Set_Value( UINT12_MAX );
 	}
 
-	void Destroy() { delete this; }
-
 	int Process( int input )
 	{
 		int	output;
@@ -64,7 +62,7 @@ struct FX_Flanger : public FX_Interface
 
 		fb = Limit( -10000, fb, 10000 );
 
-		fb = LPF.Process( fb );
+		fb = LPF( fb );
 
 		Buffer.Set_Value( fb );
 

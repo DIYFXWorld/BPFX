@@ -48,7 +48,7 @@ struct Menu_Item_FX_Phaser : public Menu_Item_Interface
 
 	virtual FX_Interface* Create_FX()
 	{
-		pFX = new FX_Phaser_II;
+		pFX = new FX_Phaser;
 		Set_Rate( Rate );
 		Set_Depth( Depth );
 		Set_Feedback( Feedback );

@@ -3,7 +3,7 @@
 
 #include	"Myutil.h"
 
-#define	VOLUME_RADIX	4095		// 10 bits
+constexpr int CURVE_RADIX	 = 4095;		// 12 bits
 
 template <typename CurveT>
 struct Volume
@@ -40,10 +40,9 @@ public:
 
 	inline int Per /*centage*/ ( int v )
 	{
-		return v * Get_Value() / VOLUME_RADIX;
+		return v * Get_Value() / CURVE_RADIX;
 	}
 };
-
 
 template <typename CurveT>
 struct Volume_x
@@ -51,7 +50,7 @@ struct Volume_x
 	int16_t		Initial_Value;
 	int16_t		Current_Value;
 	CurveT		Curve;
-	
+
 	Volume_x( const int16_t& v = 0 ):
 		Initial_Value( v ), Current_Value( Curve( v ) )
 	{
@@ -70,20 +69,20 @@ struct Volume_x
 
 	inline int Per /*centage*/ ( int v )
 	{
-		return v * Current_Value / VOLUME_RADIX;
+		return v * Current_Value / CURVE_RADIX;
 	}
 };
 
 //////////
 
-const int	Potentiometer_Curve_Per_100	= VOLUME_RADIX;
-const	int	Potentiometer_Curve_Per_10 	= Potentiometer_Curve_Per_100 * 10 / 100;
-const	int	Potentiometer_Curve_Per_20 	= Potentiometer_Curve_Per_100 * 20 / 100;
-const	int	Potentiometer_Curve_Per_35 	= Potentiometer_Curve_Per_100 * 35 / 100;
-const	int	Potentiometer_Curve_Per_50	= Potentiometer_Curve_Per_100 * 50 / 100;
-const	int	Potentiometer_Curve_Per_65	= Potentiometer_Curve_Per_100 * 65 / 100;
-const	int	Potentiometer_Curve_Per_80 	= Potentiometer_Curve_Per_100 * 80 / 100;
-const	int	Potentiometer_Curve_Per_90 	= Potentiometer_Curve_Per_100 * 90 / 100;
+constexpr int	Potentiometer_Curve_Per_100	= CURVE_RADIX;
+constexpr	int	Potentiometer_Curve_Per_10 	= Potentiometer_Curve_Per_100 * 10 / 100;
+constexpr	int	Potentiometer_Curve_Per_20 	= Potentiometer_Curve_Per_100 * 20 / 100;
+constexpr	int	Potentiometer_Curve_Per_35 	= Potentiometer_Curve_Per_100 * 35 / 100;
+constexpr	int	Potentiometer_Curve_Per_50	= Potentiometer_Curve_Per_100 * 50 / 100;
+constexpr	int	Potentiometer_Curve_Per_65	= Potentiometer_Curve_Per_100 * 65 / 100;
+constexpr	int	Potentiometer_Curve_Per_80 	= Potentiometer_Curve_Per_100 * 80 / 100;
+constexpr	int	Potentiometer_Curve_Per_90 	= Potentiometer_Curve_Per_100 * 90 / 100;
 
 template <int width, int height>
 int To_Curve_X( int v )

@@ -40,8 +40,6 @@ struct FX_String_Chorus : public FX_Interface
 		LPF = FX_String_Chorus_LPF_Param;
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int input )
 	{
 		_input_ = input;

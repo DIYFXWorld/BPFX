@@ -8,6 +8,7 @@
 #include "Port.h"
 #include "FX_Terminal.h"
 #include "Menu.h"
+#include "Memory_Pool.h"
 
 FX_Interface		*FX;
 

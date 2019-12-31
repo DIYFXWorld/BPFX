@@ -20,8 +20,6 @@ struct FX_Ring_Modulation : public FX_Interface
 		Frequency.Set_Value( 50 );
 	}
 
-	void Destroy()	{ delete this; }
-
 	int Process( int input )
 	{
 		// Set Rate

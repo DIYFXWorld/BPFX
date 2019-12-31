@@ -15,8 +15,6 @@ struct FX_None : public FX_Interface
 //		buf.Reset();
 	}
 
-	void Destroy() { delete this; }
-
 	int Process( int )
 	{
 		asm( "NOP" );

@@ -30,8 +30,6 @@ struct FX_Tremolo : public FX_Interface
 		Reset();
 	}
 
-	void Destroy()	{ delete this; }
-
 	int Process( int v )
 	{
 		// Set Rate
