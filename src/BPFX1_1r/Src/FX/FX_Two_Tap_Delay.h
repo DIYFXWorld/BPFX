@@ -37,8 +37,6 @@ struct FX_Two_Tap_Delay : public FX_Interface
 
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int input )
 	{
 		_input_ = input;

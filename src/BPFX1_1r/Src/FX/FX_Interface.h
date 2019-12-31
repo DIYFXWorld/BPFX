@@ -7,8 +7,6 @@ struct FX_Interface
 {
 	virtual ~FX_Interface(){}
 
-	virtual	void Destroy() = 0;
-
 	virtual	int Process( int ) = 0;
 
 	virtual void Set_Param_0( int )		{}

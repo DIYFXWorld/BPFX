@@ -1,6 +1,6 @@
 #include	"PCMU.h"
 
-static const uint16_t PCMU_LEVEL[ 8 ] =
+static constexpr uint16_t PCMU_LEVEL[ 8 ] =
 {
 	0x00FF, 0x01FF, 0x03FF, 0x07FF, 0x0FFF, 0x1FFF, 0x3FFF, 0x7FFF
 };

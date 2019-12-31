@@ -28,8 +28,8 @@ static	uint32_t Value;
 	x[80]+x[81]+x[82]+x[83]+x[84]+x[85]+x[86]+x[87]+x[88]+x[89]+\
 	x[90]+x[91]+x[92]+x[93]+x[94]+x[95]+x[96]+x[97]+x[98]+x[99]
 
-static const	int	_a_ = 65535/15;
-static const	int	_b_ = (4095*50)/15;
+static constexpr	int	_a_ = 65535/15;
+static constexpr	int	_b_ = (4095*50)/15;
 
 extern "C" void HAL_ADC_ConvHalfCpltCallback( ADC_HandleTypeDef* hadc )
 {

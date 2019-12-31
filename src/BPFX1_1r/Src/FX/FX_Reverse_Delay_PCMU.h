@@ -39,8 +39,6 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 		LPF_1 = FX_Revese_Delay_PCMU_LPF_Param;
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int input )
 	{
 		m_input = input;
@@ -74,11 +72,11 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 
 	int Process( int input )
 	{
-		input = LPF_0.Process( input );
+		input = LPF_0( input );
 
-		int	output = Sub_Process.Do( input );
+		int	output = Sub_Process( input );
 
-		output = LPF_1.Process( output );
+		output = LPF_1( output );
 
 		return output;
 	}

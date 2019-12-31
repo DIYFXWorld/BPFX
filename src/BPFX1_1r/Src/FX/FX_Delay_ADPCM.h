@@ -38,8 +38,6 @@ struct FX_Delay_ADPCM : public FX_Interface
 		LPF_Post = FX_Delay_ADPCM_LPF_Param;
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int input )
 	{
 		_input_ = input;

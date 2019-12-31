@@ -1,5 +1,5 @@
-#ifndef BQF_H_
-#define BQF_H_
+#ifndef BQF_h_
+#define BQF_h_
 
 #include	<math.h>
 
@@ -44,7 +44,7 @@ public:
 		*this = v;
 	}
 
-	float Process( float input )
+	float operator()( float input )
 	{
 		output	=	b0_a0 * input
 						+ b1_a0 * in1
@@ -222,4 +222,4 @@ constexpr BQF_Param BQF_Builder::APF( float freq, float q ) const
 	);
 }
 
-#endif /* BQF_H_ */
+#endif

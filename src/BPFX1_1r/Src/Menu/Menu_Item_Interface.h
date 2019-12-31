@@ -22,7 +22,7 @@ struct Menu_Item_Interface
 	{
 		if( pFX )
 		{
-			pFX->Destroy();
+			delete pFX;
 			pFX = 0;
 		}
 	}

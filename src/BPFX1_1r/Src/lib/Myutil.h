@@ -71,7 +71,7 @@ inline int Map( const int& value )
 
 ////////// 16bit utility
 
-extern const	uint16_t	UINT16_HALF;
+constexpr	uint16_t	UINT16_HALF		=  UINT16_MAX/2;
 
 #define	  SIGNED_16( hoge )		( (hoge) - UINT16_HALF )
 #define	UNSIGNED_16( hoge )		( (hoge) + UINT16_HALF )
@@ -85,10 +85,10 @@ extern const	uint16_t	UINT16_HALF;
 
 ////////// 14bit utility
 
-extern const	uint16_t	UINT14_MAX;
-extern const	uint16_t	UINT14_HALF;
-extern const	 int16_t	INT14_MAX;
-extern const	 int16_t  INT14_MIN;
+constexpr	uint16_t	UINT14_MAX	=  16383;
+constexpr	uint16_t	UINT14_HALF	=  16383/2;
+constexpr	 int16_t	INT14_MAX		=  16383/2;
+constexpr	 int16_t  INT14_MIN		= -(16383/2)-1;
 
 #define	  SIGNED_14( hoge )		( hoge - UINT14_HALF )
 #define	UNSIGNED_14( hoge )		( hoge + UINT14_HALF )
@@ -102,10 +102,10 @@ extern const	 int16_t  INT14_MIN;
 
 ////////// 12bit utility
 
-extern const	uint16_t	UINT12_MAX;
-extern const	uint16_t	UINT12_HALF;
-extern const	 int16_t	INT12_MAX;
-extern const	 int16_t  INT12_MIN;
+constexpr	uint16_t	UINT12_MAX	=  4095;
+constexpr	uint16_t	UINT12_HALF	=  2047;
+constexpr	 int16_t	INT12_MAX		=  2047;
+constexpr	 int16_t  INT12_MIN		= -2048;
 
 #define	  SIGNED_12( hoge )		( hoge - UINT12_HALF )
 #define	UNSIGNED_12( hoge )		( hoge + UINT12_HALF )
@@ -125,8 +125,6 @@ extern const	 int16_t  INT12_MIN;
 
 #define	MS_TO_UINT12( MS, MS_MAX )	( 4095 * MS / MS_MAX )
 
-unsigned long Random();
-
 template <typename T>
 int Circuler_Inc( T v, T min, T max )
 {
@@ -142,5 +140,14 @@ int Circuler_Dec( T v, T min, T max )
 	if( v < min )	v = max;
 	return v;
 }
+
+inline unsigned long Random()
+{
+	static unsigned long x=123456789,y=362436069,z=521288629,w=88675123;
+	unsigned long t=(x^(x<<11));
+	x=y;y=z;z=w;
+	return( w=(w^(w>>19))^(t^(t>>8)) );
+}
+
 
 #endif

@@ -36,8 +36,6 @@ struct FX_Delay : public FX_Interface
 		LPF_Post 	= FX_Delay_LPF_Param;
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int v )
 	{
 		_input_ = v;

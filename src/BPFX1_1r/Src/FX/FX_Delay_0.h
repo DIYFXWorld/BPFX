@@ -30,8 +30,6 @@ struct FX_Delay_0 : public FX_Interface
 		LPF_Post 	= FX_Delay_0_LPF_Param;
 	}
 
-	void Destroy() { delete this; }
-
 	int Process( int input )
 	{
 		input = LPF_Pre( input );

@@ -38,8 +38,6 @@ struct FX_Analog_Delay : public FX_Interface
 		LPF 			= FX_Analog_Delay_LPF_Param_1;
 	}
 
-	void Destroy() { delete this; }
-
 	void Sub_Process_0( int v )
 	{
 		_input_ = v;
@@ -55,7 +53,7 @@ struct FX_Analog_Delay : public FX_Interface
 
 	void Sub_Process_2()
 	{
-		_input_ = LPF.Process( _input_ );
+		_input_ = LPF( _input_ );
 		_input_  = LIMIT_INT16( _input_ );
 		Buffer.Set_Value( _input_ );
 	}
