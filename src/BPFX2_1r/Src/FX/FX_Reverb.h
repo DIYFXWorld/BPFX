@@ -10,21 +10,21 @@
 #include <Reverb_APF.h>
 #include <Reverb_Comb.h>
 
-const Q15T	muted					( 0.f );
-const Q15T	Fixed_Gain		( 0.04f );
-const Q15T 	Scale_Damp		( 0.4f );
-const Q15T 	Scale_Room		( 0.28f );
-const Q15T 	Offset_Room		( 0.7f );
-const Q15T	Initial_Room	( 0.5f );
-const Q15T 	Initial_Damp	( 0.1f );
-
-constexpr Q15T_BQF_Param FX_Reverb_LPF_Param	= BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Reverb_Dip_Param	= BQF_Builder( _FS_/2 ).PK( 450.f, 0.75f, -10 );
-
 class FX_Reverb : public FX_Interface
 {
-	static const int		Num_Combs			= 8;
-	static const int		Num_APFs			= 4;
+	static constexpr Q15T_BQF_Params LPF_Params	= BQF_LPF ( 10000.f, 0.75f );
+	static constexpr Q15T_BQF_Params Dip_Params	= BQF_Peak(   450.f, 0.75f, -10 );
+
+	static constexpr Q15T	muted					= Q15T( 0.00f );
+	static constexpr Q15T	Fixed_Gain		= Q15T( 0.04f );
+	static constexpr Q15T Scale_Damp		= Q15T( 0.40f );
+	static constexpr Q15T Scale_Room		= Q15T( 0.28f );
+	static constexpr Q15T Offset_Room		= Q15T( 0.70f );
+	static constexpr Q15T	Initial_Room	= Q15T( 0.50f );
+	static constexpr Q15T Initial_Damp	= Q15T( 0.10f );
+
+	static const int	Num_Combs		= 8;
+	static const int	Num_APFs		= 4;
 
 	static const int Comb_Tuning_1		= _MS_2_LENGTH( 25.3061f, _FS_/2 ); // 1116;
 	static const int Comb_Tuning_2		= _MS_2_LENGTH( 26.9388f, _FS_/2 ); // 1188;
@@ -97,9 +97,9 @@ public:
 		for( int i( 0 ); i < Num_Combs; ++i )	Combs[ i ].Clear();
 		for( int i( 0 ); i < Num_APFs; ++i )	APFs[ i ].Clear();
 
-		LPF_0 = FX_Reverb_LPF_Param;
-		LPF_1 = FX_Reverb_LPF_Param;
-		Dip   = FX_Reverb_Dip_Param;
+		LPF_0 = LPF_Params;
+		LPF_1 = LPF_Params;
+		Dip   = Dip_Params;
 	}
 
 	void Set_Room_Size( const Q15T& v )
@@ -126,7 +126,7 @@ public:
 		return Div_64( Damp, Scale_Damp );
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		m_input = input;
 
@@ -146,7 +146,7 @@ public:
 		m_output += Combs[ 2 ].Process( m_input );
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		m_output += Combs[ 3 ].Process( m_input );
 		m_output += Combs[ 4 ].Process( m_input );

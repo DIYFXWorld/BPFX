@@ -9,10 +9,10 @@
 #include <Q15T_BQF.h>
 #include <Delay_PCMU_Buffer.h>
 
-constexpr Q15T_BQF_Param FX_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-
 struct FX_Delay_PCMU : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+
 	static const int		BUFFER_LENGTH	= FX_DELAY_PCMU_BUFFER_LENGTH;
 
 	Volume_x<Curve_B>		Time_Length;	// 0...max buffer length
@@ -32,11 +32,11 @@ struct FX_Delay_PCMU : public FX_Interface
 		Sub_Process( this ),
 		_input_( 0 ), _output_( 0 ), _delay_( 0 )
 	{
-		LPF_Pre = FX_Delay_PCMU_LPF_Param;
-		LPF_Post = FX_Delay_PCMU_LPF_Param;
+		LPF_Pre		= LPF_Params;
+		LPF_Post	= LPF_Params;
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		_input_ = input;
 
@@ -45,7 +45,7 @@ struct FX_Delay_PCMU : public FX_Interface
 		_delay_ = Buffer.Get_Value();
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		_input_	+= Feedback.Per( _delay_ );
 		_output_ = Mix_Level.Per( _delay_ );

@@ -10,7 +10,7 @@
 #include "Menu.h"
 #include "Memory_Pool.h"
 
-FX_Interface		*FX;
+FX_Interface	*FX;
 
 void Audio_Input_Callback( int v )
 {

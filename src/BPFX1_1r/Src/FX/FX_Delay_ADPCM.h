@@ -10,12 +10,11 @@
 #include <Delay_ADPCM_Buffer.h>
 #include <FX_Config.h>
 
-constexpr Q15T_BQF_Param FX_Delay_ADPCM_LPF_Param   = BQF_Builder( _FS_   ).LPF( 10000.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Delay_ADPCM_LPF_Param_2 = BQF_Builder( _FS_/2 ).LPF(  8000.f, 0.75f );
-
 struct FX_Delay_ADPCM : public FX_Interface
 {
-//	static const int			BUFFER_LENGTH	= FX_DELAY_ADPCM_BUFFER_LENGTH;
+	static constexpr Q15T_BQF_Params LPF_Params   = BQF_LPF( 10000.f, 0.75f );
+
+	//	static const int			BUFFER_LENGTH	= FX_DELAY_ADPCM_BUFFER_LENGTH;
 
 	int										Time_Length;	// 0...max buffer length
 	Volume<Curve_B>				Feedback;			// 0...4095
@@ -34,18 +33,18 @@ struct FX_Delay_ADPCM : public FX_Interface
 		Sub_Process( this ),
 		_input_( 0 ), _output_( 0 ), _delay_( 0 )
 	{
-		LPF_Pre = FX_Delay_ADPCM_LPF_Param;
-		LPF_Post = FX_Delay_ADPCM_LPF_Param;
+		LPF_Pre		= LPF_Params;
+		LPF_Post	= LPF_Params;
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		_input_ = input;
 		Buffer.Set_Length( Time_Length );
 		_delay_ = Buffer.Get_Value();
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		_input_	+= Feedback.Per( _delay_ );
 		_output_ = Mix_Level.Per( _delay_ );

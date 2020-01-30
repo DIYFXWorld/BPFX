@@ -17,14 +17,14 @@ struct Sub_Process_2
 	{
 		if( Count == 0 )
 		{
-			Owner.Sub_Process_0( Last );
+			Owner.SUB_PROCESS_0( Last );
 			Sum = input;
 			++Count;
 		}
 		else
 		if( Count == 1 )
 		{
-			Output = Owner.Sub_Process_1();
+			Output = Owner.SUB_PROCESS_1();
 			Sum += input;
 			Last = Sum / 2;
 			Count = 0;
@@ -55,28 +55,28 @@ struct Sub_Process_4
 	{
 		if( Count == 0 )
 		{
-			Owner.Sub_Process_0( Last );
+			Owner.SUB_PROCESS_0( Last );
 			Sum = input;
 			++Count;
 		}
 		else
 		if( Count == 1 )
 		{
-			Owner.Sub_Process_1();
+			Owner.SUB_PROCESS_1();
 			Sum += input;
 			++Count;
 		}
 		else
 		if( Count == 2 )
 		{
-			Owner.Sub_Process_2();
+			Owner.SUB_PROCESS_2();
 			Sum += input;
 			++Count;
 		}
 		else
 		if( Count == 3 )
 		{
-			Output = Owner.Sub_Process_3();
+			Output = Owner.SUB_PROCESS_3();
 			Sum += input;
 			Last = Sum / 4;
 			Count = 0;

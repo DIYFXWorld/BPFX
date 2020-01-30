@@ -9,11 +9,11 @@
 #include <Q15T_BQF.h>
 #include <Q15T_LFO.h>
 
-constexpr Q15T_BQF_Param FX_Phaser_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Phaser_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-
 struct FX_Phaser : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params HPF_Params = BQF_HPF(   200.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+
 	class Allpass_Delay
 	{
   private:
@@ -62,8 +62,8 @@ struct FX_Phaser : public FX_Interface
 		num_APF( 6 )
 	{
   	Set_Range( Q15T( 200 ), Q15T( 1600 ) );
-		HPF = FX_Phaser_HPF_Param;
-		LPF = FX_Phaser_LPF_Param;
+		HPF = HPF_Params;
+		LPF = LPF_Params;
   	Mix_Level.Set_Value( UINT12_MAX*7/10 );
 		Reset();
   }

@@ -4,18 +4,18 @@
 #include	"Q15T.h"
 #include	"BQF.h"
 
-struct Q15T_BQF_Param
+struct Q15T_BQF_Params
 {
 	Q15T		b0_a0, b1_a0, b2_a0;
 	Q15T		a1_a0, a2_a0;
 
-	constexpr Q15T_BQF_Param():
+	constexpr Q15T_BQF_Params():
 		b0_a0(0), b1_a0(0), b2_a0(0),
 		a1_a0(0), a2_a0(0)
 	{
 	}
 
-	constexpr Q15T_BQF_Param( const BQF_Param& v )
+	constexpr Q15T_BQF_Params( const BQF_Params& v )
 	{
 		b0_a0 = Q15T( v.b0 / v.a0 );
 		b1_a0 = Q15T( v.b1 / v.a0 );
@@ -40,30 +40,31 @@ public:
 	{
 	}
 
-	Q15T_BQF( const BQF_Param& v ):
+	Q15T_BQF( const BQF_Params& v ):
 		in1( 0 ), in2( 0 ), out1( 0 ), out2( 0 )
 	{
 		*this = v;
 	}
 
-	Q15T_BQF( const Q15T_BQF_Param& v ):
+	Q15T_BQF( const Q15T_BQF_Params& v ):
 		in1( 0 ), in2( 0 ), out1( 0 ), out2( 0 )
+	{
+		*this = v;
+	}
+
+	Q15T_BQF& operator = ( const BQF_Params& v )
+	{
+		*this = Q15T_BQF_Params( v );
+		return *this;
+	}
+
+	Q15T_BQF& operator = ( const Q15T_BQF_Params& v )
 	{
 		b0_a0 = v.b0_a0;
 		b1_a0	= v.b1_a0;
 		b2_a0 = v.b2_a0;
 		a1_a0	= v.a1_a0;
 		a2_a0 = v.a2_a0;
-	}
-
-	Q15T_BQF& operator = ( const BQF_Param& v )
-	{
-		b0_a0 = Q15T( v.b0 / v.a0 );
-		b1_a0 = Q15T( v.b1 / v.a0 );
-		b2_a0 = Q15T( v.b2 / v.a0 );
-		a1_a0 = Q15T( v.a1 / v.a0 );
-		a2_a0 = Q15T( v.a2 / v.a0 );
-
 		return *this;
 	}
 

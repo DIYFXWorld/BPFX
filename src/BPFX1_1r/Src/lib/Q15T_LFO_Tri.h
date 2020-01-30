@@ -8,8 +8,8 @@
 	constexpr	Q15T	Q15T_32767 (  32767 );
 #endif
 
-#ifndef	Q15T_32768M
-	constexpr	Q15T	Q15T_32768M( -32768 );
+#ifndef	Q15T_M32768
+	constexpr	Q15T	Q15T_M32768( -32768 );
 #endif
 
 struct Q15T_LFO_Tri
@@ -49,9 +49,9 @@ struct Q15T_LFO_Tri
 			case 1:
 			{
 				Theta -= Step;
-				if( Theta < Q15T_32768M )
+				if( Theta < Q15T_M32768 )
 				{
-					Theta = Q15T_32768M;
+					Theta = Q15T_M32768;
 					Phase = 0;
 				}
 				break;

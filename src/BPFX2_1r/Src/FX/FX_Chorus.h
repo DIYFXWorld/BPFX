@@ -10,11 +10,11 @@
 #include <Q15T_LFO.h>
 #include <Chorus_Buffer.h>
 
-constexpr Q15T_BQF_Param FX_Chorus_HPF_Param = BQF_Builder( _FS_ ).HPF(   200.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Chorus_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-
 struct FX_Chorus : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params HPF_Params = BQF_HPF(   200.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+
 	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_ );
 	static const int	DELAY_BUFFER_LENGTH = _MS_2_LENGTH(  5, _FS_ );
 
@@ -35,11 +35,11 @@ struct FX_Chorus : public FX_Interface
 		LFO( _FS_, int16_t_Sin_Table ), Sub_Process( this )
 	{
 		Mix_Level.Set_Value( UINT12_MAX*6/10 );
-		HPF = FX_Chorus_HPF_Param;
-		LPF = FX_Chorus_LPF_Param;
+		HPF = HPF_Params;
+		LPF = LPF_Params;
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		_input_ = input;
 
@@ -52,7 +52,7 @@ struct FX_Chorus : public FX_Interface
 		Buffer.Set_Value( _input_ );
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
 		Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;

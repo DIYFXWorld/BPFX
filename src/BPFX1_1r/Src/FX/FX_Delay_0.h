@@ -8,11 +8,11 @@
 #include <Q15T_BQF.h>
 #include <Delay_Buffer.h>
 
-constexpr Q15T_BQF_Param FX_Delay_0_LPF_Param = BQF_Builder( _FS_ ).LPF( 20000.f, 0.75f );
-
 struct FX_Delay_0 : public FX_Interface
 {
-//	static const int		BUFFER_LENGTH	= FX_DELAY_0_BUFFER_LENGTH;
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 20000.f, 0.75f );
+
+	//	static const int		BUFFER_LENGTH	= FX_DELAY_0_BUFFER_LENGTH;
 
 	Volume_x<Curve_B>		Time_Length;
 	Volume<Curve_B>			Feedback;
@@ -26,8 +26,8 @@ struct FX_Delay_0 : public FX_Interface
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
 		Buffer( FX_DELAY_0_BUFFER_LENGTH )
 	{
-		LPF_Pre 	= FX_Delay_0_LPF_Param;
-		LPF_Post 	= FX_Delay_0_LPF_Param;
+		LPF_Pre 	= LPF_Params;
+		LPF_Post 	= LPF_Params;
 	}
 
 	int Process( int input )

@@ -10,10 +10,10 @@
 #include <Reverse_Delay_Buffer_PCMU.h>
 #include <Mute.h>
 
-constexpr Q15T_BQF_Param FX_Revese_Delay_PCMU_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-
 struct FX_Reverse_Delay_PCMU : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+
 //	static const int 						BUFFER_LENGTH	= 7950*2;
 
 	Volume<Curve_B>							Time_Length;
@@ -35,11 +35,11 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 		Sub_Process( this ),
 		m_input( 0 ), m_output( 0 ), m_delay( 0 )
 	{
-		LPF_0 = FX_Revese_Delay_PCMU_LPF_Param;
-		LPF_1 = FX_Revese_Delay_PCMU_LPF_Param;
+		LPF_0 = LPF_Params;
+		LPF_1 = LPF_Params;
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		m_input = input;
 
@@ -57,7 +57,7 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 		m_delay = Mute.Process( m_delay );
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		m_input	-= Feedback.Per( m_delay );
 		m_output = Mix_Level.Per( m_delay );

@@ -11,12 +11,12 @@
 #include <Mute.h>
 #include <FX_Config.h>
 
-constexpr Q15T_BQF_Param FX_Reverse_Delay_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-
 struct FX_Reverse_Delay : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+
 	static const int 				FS_RATIO			= 2;
-	static const int				BUFFER_LENGTH	= FX_REVERSE_DELAY_BUFFER_LENGTH;
+//	static const int				BUFFER_LENGTH	= FX_REVERSE_DELAY_BUFFER_LENGTH;
 
 	Volume<Curve_A>					Time_Length;
 	Volume<Curve_B>					Feedback;
@@ -32,13 +32,13 @@ struct FX_Reverse_Delay : public FX_Interface
 
 	FX_Reverse_Delay():
 		Time_Length( 1 ), Feedback( 0 ), Mix_Level( 0 ),
-		Buffer( BUFFER_LENGTH ), Mute( 40 ), Sub_Process( this )
+		Buffer( FX_REVERSE_DELAY_BUFFER_LENGTH ), Mute( 40 ), Sub_Process( this )
 	{
-		LPF_Pre 	= FX_Reverse_Delay_LPF_Param;
-		LPF_Post	= FX_Reverse_Delay_LPF_Param;
+		LPF_Pre 	= LPF_Params;
+		LPF_Post	= LPF_Params;
 	}
 
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		_input_ = input;
 
@@ -53,7 +53,7 @@ struct FX_Reverse_Delay : public FX_Interface
 				Mute.Start();
 	}
 
-	int Sub_Process_1()
+	int SUB_PROCESS_1()
 	{
 		_delay_ = Buffer.Get_Value();
 		_delay_ = Mute.Process( _delay_ );

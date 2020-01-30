@@ -9,11 +9,11 @@
 #include <Q15T_BQF.h>
 #include <Delay_Buffer.h>
 
-constexpr Q15T_BQF_Param FX_Analog_Delay_LPF_Param_0 = BQF_Builder( _FS_  ).LPF( 3000.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Analog_Delay_LPF_Param_1 = BQF_Builder( 10000 ).LPF( 1500.f, 1.f );
-
 struct FX_Analog_Delay : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params_0 = BQF_LPF( 3000.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params_1 = BQF_LPF( 1500.f, 1.f, 10000 );
+
 	static const int			FS_RATIO 			= 4;
 	static const int			BUFFER_LENGTH	= FX_ANALOG_DELAY_BUFFER_LENGTH;
 
@@ -33,32 +33,32 @@ struct FX_Analog_Delay : public FX_Interface
 		Buffer( BUFFER_LENGTH ),
 		Sub_Process( *this )
 	{
-		LPF_Pre 	= FX_Analog_Delay_LPF_Param_0;
-		LPF_Post	= FX_Analog_Delay_LPF_Param_0;
-		LPF 			= FX_Analog_Delay_LPF_Param_1;
+		LPF_Pre 	= LPF_Params_0;
+		LPF_Post	= LPF_Params_0;
+		LPF 			= LPF_Params_1;
 	}
 
-	void Sub_Process_0( int v )
+	void SUB_PROCESS_0( int v )
 	{
 		_input_ = v;
 		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) );
 	}
 
-	void Sub_Process_1()
+	void SUB_PROCESS_1()
 	{
 		_delay_ = Buffer.Get_Value();
 		_input_	-= Feedback.Per( _delay_ );
 		_output_ = Mix_Level.Per( _delay_ );
 	}
 
-	void Sub_Process_2()
+	void SUB_PROCESS_2()
 	{
 		_input_ = LPF( _input_ );
 		_input_  = LIMIT_INT16( _input_ );
 		Buffer.Set_Value( _input_ );
 	}
 
-	int Sub_Process_3()
+	int SUB_PROCESS_3()
 	{
 		_output_ = LIMIT_INT16( _output_ );
 		return _output_;

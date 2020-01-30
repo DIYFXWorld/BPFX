@@ -10,11 +10,10 @@
 #include <Q15T_LFO.h>
 #include "Chorus_Buffer.h"
 
-//constexpr Q15T_BQF_Param FX_Flanger_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 0.75f );
-constexpr Q15T_BQF_Param FX_Flanger_LPF_Param = BQF_Builder( _FS_ ).LPF( 10000.f, 1.0f );
-
 struct FX_Flanger : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 1.0f );
+
 	static const int		DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_ );
 	static const int		DELAY_BUFFER_LENGTH = _MS_2_LENGTH( 20, _FS_ );
 
@@ -32,7 +31,7 @@ struct FX_Flanger : public FX_Interface
 		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
 		LFO( _FS_, int16_t_Sin_Table )
 	{
-		LPF = FX_Flanger_LPF_Param;
+		LPF = LPF_Params;
   	Mix_Level.Set_Value( UINT12_MAX );
 	}
 

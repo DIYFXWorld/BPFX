@@ -10,7 +10,7 @@ struct Menu_Item_FX_Flanger : public Menu_Item_Interface
 	int8_t	Rate, Depth, Mix_Level, Time, Feedback;
 
 	Menu_Item_FX_Flanger():
-		Rate( 30 ), Depth( 30 ), Mix_Level( 70 ), Time( 20 ), Feedback( 70 )
+		Rate( 30 ), Depth( 30 ), Mix_Level( 70 ), Time( 20 ), Feedback( 90 )
 	{
 	}
 

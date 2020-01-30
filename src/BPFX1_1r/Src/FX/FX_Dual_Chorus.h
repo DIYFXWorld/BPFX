@@ -42,7 +42,7 @@ struct FX_Dual_Chorus : public FX_Interface
 		LPF = LPF_Params;
 	}
 
-	void SUB_PROCESS_0( int input )
+	void Sub_Process_0( int input )
 	{
 		_input_ = input;
 
@@ -63,7 +63,7 @@ struct FX_Dual_Chorus : public FX_Interface
 							   ( Q15T_1 - delta ) * Buffer_0.Get_Value( m     ) ).to_int();
 	}
 
-	int SUB_PROCESS_1()
+	int Sub_Process_1()
 	{
 		// Set Rate
 		{

@@ -10,10 +10,10 @@
 #include <Q15T_LFO.h>
 #include <Modulation_Delay_Buffer.h>
 
-constexpr Q15T_BQF_Param FX_Modulation_Delay_LPF_Param = BQF_Builder( _FS_ ).LPF( 5000.f, 1.f );
-
 struct FX_Modulation_Delay : public FX_Interface
 {
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 5000.f, 1.f );
+
 	static const int	FS_RATIO	= 4;
 	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH(  20, _FS_/FS_RATIO );
 	static const int	DELAY_BUFFER_LENGTH = FX_MODULATION_DELAY_BUFFER_LENGTH;
@@ -37,13 +37,11 @@ struct FX_Modulation_Delay : public FX_Interface
 		Sub_Process( *this ),
 		m_input( 0 ), m_output( 0 ), m_wet( 0 ), m_fb( 0 )
 	{
-		LPF_0 = FX_Modulation_Delay_LPF_Param;
-		LPF_1 = FX_Modulation_Delay_LPF_Param;
+		LPF_0 = LPF_Params;
+		LPF_1 = LPF_Params;
 	}
 
-	void Destroy() { delete this; }
-
-	void Sub_Process_0( int input )
+	void SUB_PROCESS_0( int input )
 	{
 		m_input = input;
 
@@ -51,7 +49,7 @@ struct FX_Modulation_Delay : public FX_Interface
 		LFO.Set_Rate( Fraction( v, 300 ) );
 	}
 
-	void Sub_Process_1()
+	void SUB_PROCESS_1()
 	{
 		int	DEPTH				= Depth.Per( DEPTH_BUFFER_LENGTH-1 );
 		int	DELAY_TIME	= Delay_Time.Per( DELAY_BUFFER_LENGTH-1 );
@@ -62,13 +60,13 @@ struct FX_Modulation_Delay : public FX_Interface
 		m_wet = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
 	}
 
-	void Sub_Process_2()
+	void SUB_PROCESS_2()
 	{
 		m_fb = m_input - Feedback.Per( m_wet );
 		m_fb = LIMIT_INT16( m_fb );
 	}
 
-	int Sub_Process_3()
+	int SUB_PROCESS_3()
 	{
 		Buffer.Set_Value( m_fb );
 		m_wet = Mix_Level.Per( m_wet );
