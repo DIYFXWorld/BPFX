@@ -21,7 +21,7 @@ extern "C" void main_cpp()
 {
 	Menu_Initial();
 
-	FX = Menu.Select( 5 );
+	FX = Menu.Select( 1 );
 
 	Audio::Start();
 
