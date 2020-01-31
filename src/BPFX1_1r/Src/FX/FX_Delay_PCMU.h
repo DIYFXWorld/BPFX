@@ -11,9 +11,11 @@
 
 struct FX_Delay_PCMU : public FX_Interface
 {
+	static const int FS_RATIO = 2;
+
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
-	static const int		BUFFER_LENGTH	= FX_DELAY_PCMU_BUFFER_LENGTH;
+//	static const int		BUFFER_LENGTH	= FX_DELAY_PCMU_BUFFER_LENGTH;
 
 	Volume_x<Curve_B>		Time_Length;	// 0...max buffer length
 	Volume<Curve_B>			Feedback;			// 0...4095
@@ -24,13 +26,13 @@ struct FX_Delay_PCMU : public FX_Interface
 	Q15T_BQF						LPF_Pre, LPF_Post;
 
 	Sub_Process_2<FX_Delay_PCMU>	Sub_Process;
-	int														_input_, _output_, _delay_;
+	int														sp_input, sp_output, sp_delay;
 
 	FX_Delay_PCMU() :
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
-		Buffer( BUFFER_LENGTH ),
+		Buffer( FX_DELAY_PCMU_BUFFER_LENGTH ),
 		Sub_Process( this ),
-		_input_( 0 ), _output_( 0 ), _delay_( 0 )
+		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
 		LPF_Pre		= LPF_Params;
 		LPF_Post	= LPF_Params;
@@ -38,24 +40,24 @@ struct FX_Delay_PCMU : public FX_Interface
 
 	void SUB_PROCESS_0( int input )
 	{
-		_input_ = input;
+		sp_input = input;
 
 		Buffer.Set_Length( Time_Length.Get_Value() );
 
-		_delay_ = Buffer.Get_Value();
+		sp_delay = Buffer.Get_Value();
 	}
 
 	int SUB_PROCESS_1()
 	{
-		_input_	+= Feedback.Per( _delay_ );
-		_output_ = Mix_Level.Per( _delay_ );
+		sp_input	+= Feedback.Per( sp_delay );
+		sp_output = Mix_Level.Per( sp_delay );
 
-		_input_  = LIMIT_INT16( _input_ );
-		_output_ = LIMIT_INT16( _output_ );
+		sp_input  = LIMIT_INT16( sp_input );
+		sp_output = LIMIT_INT16( sp_output );
 
-		Buffer.Set_Value( _input_ );
+		Buffer.Set_Value( sp_input );
 
-		return _output_;
+		return sp_output;
 	}
 
 	int Process( int input )
@@ -83,8 +85,8 @@ struct FX_Delay_PCMU : public FX_Interface
 		Buffer.Reset();
 		LPF_Pre.Reset();
 		LPF_Post.Reset();
-		_input_ = _output_ = _delay_ = 0;
 		Sub_Process.Reset();
+		sp_input = sp_output = sp_delay = 0;
 	}
 };
 

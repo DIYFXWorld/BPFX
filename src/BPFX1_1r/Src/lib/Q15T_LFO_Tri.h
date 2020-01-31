@@ -12,22 +12,21 @@
 	constexpr	Q15T	Q15T_M32768( -32768 );
 #endif
 
+template <int sampling_rate>
 struct Q15T_LFO_Tri
 {
-	int		Sampling_Rate;
 	Q15T	Step;
 	Q15T	Theta;
 	int		Phase;
 
-	Q15T_LFO_Tri( int sampling_rate ):
-		Sampling_Rate( sampling_rate ),
+	Q15T_LFO_Tri():
 		Step( 0 ), Theta( 0 ), Phase( 0 )
 	{
 	}
 
 	void Set_Rate( const Fraction& v )
 	{
-		Step = Q15T_32767 / ( Sampling_Rate / 4 ) * v;
+		Step = Q15T_32767 / ( sampling_rate / 4 ) * v;
 	}
 
 	Q15T Get_Value()

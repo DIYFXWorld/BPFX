@@ -11,27 +11,29 @@
 
 struct FX_Analog_Delay : public FX_Interface
 {
+	static const int	FS_RATIO	= 4;
+
 	static constexpr Q15T_BQF_Params LPF_Params_0 = BQF_LPF( 3000.f, 0.75f );
-	static constexpr Q15T_BQF_Params LPF_Params_1 = BQF_LPF( 1500.f, 1.f, 10000 );
+	static constexpr Q15T_BQF_Params LPF_Params_1 = BQF_LPF( 1500.f, 1.f, _FS_/FS_RATIO );
 
-	static const int			FS_RATIO 			= 4;
-	static const int			BUFFER_LENGTH	= FX_ANALOG_DELAY_BUFFER_LENGTH;
+//	static const int			BUFFER_LENGTH	= FX_ANALOG_DELAY_BUFFER_LENGTH;
 
-	Volume_x<Curve_D>			Time_Length;	// 0...4095
-	Volume<Curve_B>				Feedback;			// 0...4095
-	Volume<Curve_B>				Mix_Level;		// 0...4095
+	Volume_x<Curve_D>		Time_Length;	// 0...4095
+	Volume<Curve_B>			Feedback;			// 0...4095
+	Volume<Curve_B>			Mix_Level;		// 0...4095
 
-	Delay_Buffer					Buffer;
+	Delay_Buffer				Buffer;
 
-	Q15T_BQF							LPF_Pre, LPF_Post, LPF;
+	Q15T_BQF						LPF_Pre, LPF_Post, LPF;
 
 	Sub_Process_4<FX_Analog_Delay>	Sub_Process;
-	int															_input_, _output_, _delay_; // for sub process
+	int															sp_input, sp_output, sp_delay; // for sub process
 
 	FX_Analog_Delay():
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
-		Buffer( BUFFER_LENGTH ),
-		Sub_Process( *this )
+		Buffer( FX_ANALOG_DELAY_BUFFER_LENGTH ),
+		Sub_Process( *this ),
+		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
 		LPF_Pre 	= LPF_Params_0;
 		LPF_Post	= LPF_Params_0;
@@ -40,28 +42,28 @@ struct FX_Analog_Delay : public FX_Interface
 
 	void SUB_PROCESS_0( int v )
 	{
-		_input_ = v;
+		sp_input = v;
 		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) );
 	}
 
 	void SUB_PROCESS_1()
 	{
-		_delay_ = Buffer.Get_Value();
-		_input_	-= Feedback.Per( _delay_ );
-		_output_ = Mix_Level.Per( _delay_ );
+		sp_delay = Buffer.Get_Value();
+		sp_input	-= Feedback.Per( sp_delay );
+		sp_output = Mix_Level.Per( sp_delay );
 	}
 
 	void SUB_PROCESS_2()
 	{
-		_input_ = LPF( _input_ );
-		_input_  = LIMIT_INT16( _input_ );
-		Buffer.Set_Value( _input_ );
+		sp_input = LPF( sp_input );
+		sp_input  = LIMIT_INT16( sp_input );
+		Buffer.Set_Value( sp_input );
 	}
 
 	int SUB_PROCESS_3()
 	{
-		_output_ = LIMIT_INT16( _output_ );
-		return _output_;
+		sp_output = LIMIT_INT16( sp_output );
+		return sp_output;
 	}
 
 	int Process( int input )
@@ -100,6 +102,11 @@ struct FX_Analog_Delay : public FX_Interface
 		Buffer.Fast_Forward();
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
+		LPF.Reset();
+		Sub_Process.Reset();
+		sp_input = sp_output = sp_delay = 0;
 	}
 };
 

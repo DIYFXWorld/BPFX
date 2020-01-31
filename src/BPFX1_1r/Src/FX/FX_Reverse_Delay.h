@@ -13,9 +13,10 @@
 
 struct FX_Reverse_Delay : public FX_Interface
 {
+	static const int	FS_RATIO	= 2;
+
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
-	static const int 				FS_RATIO			= 2;
 //	static const int				BUFFER_LENGTH	= FX_REVERSE_DELAY_BUFFER_LENGTH;
 
 	Volume<Curve_A>					Time_Length;
@@ -28,11 +29,13 @@ struct FX_Reverse_Delay : public FX_Interface
 	Q15T_BQF								LPF_Pre, LPF_Post;
 
 	Sub_Process_2<FX_Reverse_Delay>		Sub_Process;
-	int																_input_, _output_, _delay_;	// for sub process
+	int																sp_input, sp_output, sp_delay;	// for sub process
 
 	FX_Reverse_Delay():
 		Time_Length( 1 ), Feedback( 0 ), Mix_Level( 0 ),
-		Buffer( FX_REVERSE_DELAY_BUFFER_LENGTH ), Mute( 40 ), Sub_Process( this )
+		Buffer( FX_REVERSE_DELAY_BUFFER_LENGTH ), Mute( 40 ),
+		Sub_Process( this ),
+	sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
 		LPF_Pre 	= LPF_Params;
 		LPF_Post	= LPF_Params;
@@ -40,7 +43,7 @@ struct FX_Reverse_Delay : public FX_Interface
 
 	void SUB_PROCESS_0( int input )
 	{
-		_input_ = input;
+		sp_input = input;
 
 		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 100, Buffer.Memory.Length-1 ) );
 
@@ -55,18 +58,18 @@ struct FX_Reverse_Delay : public FX_Interface
 
 	int SUB_PROCESS_1()
 	{
-		_delay_ = Buffer.Get_Value();
-		_delay_ = Mute.Process( _delay_ );
+		sp_delay = Buffer.Get_Value();
+		sp_delay = Mute.Process( sp_delay );
 
-		_input_	-= Feedback.Per( _delay_ );
-		_output_ = Mix_Level.Per( _delay_ );
+		sp_input	-= Feedback.Per( sp_delay );
+		sp_output = Mix_Level.Per( sp_delay );
 
-		_input_  = LIMIT_INT16( _input_ );
-		_output_ = LIMIT_INT16( _output_ );
+		sp_input  = LIMIT_INT16( sp_input );
+		sp_output = LIMIT_INT16( sp_output );
 
-		Buffer.Set_Value( _input_ );
+		Buffer.Set_Value( sp_input );
 
-		return _output_;
+		return sp_output;
 	}
 
 	int Process( int input )
@@ -83,7 +86,7 @@ struct FX_Reverse_Delay : public FX_Interface
 	void Set_Param_2( int v )	{ Time_Length.Set_Value( v ); }
 	int Get_Param_2() const		{ return Time_Length.Initial_Value; }
 
-	void Set_Param_3( int v /*ms*/ )
+	void Set_Param_3( int v )	// ms
 	{
 		int length = _MS_2_LENGTH( v, _FS_/FS_RATIO );
 		length = Limit<int>( 1, length, Buffer.Memory.Length-1 );
@@ -105,6 +108,8 @@ struct FX_Reverse_Delay : public FX_Interface
 		Time_Length.Fast_Forward();
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
+		Sub_Process.Reset();
+		sp_input = sp_output = sp_delay = 0;
 	}
 };
 #endif

@@ -11,9 +11,9 @@
 
 struct FX_Delay : public FX_Interface
 {
-	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+	static const int		FS_RATIO	= 2;
 
-	static const int		FS_RATIO			= 2;
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
 //	static const int		BUFFER_LENGTH	= FX_DELAY_BUFFER_LENGTH;
 
@@ -26,12 +26,13 @@ struct FX_Delay : public FX_Interface
 	Q15T_BQF						LPF_Pre, LPF_Post;
 
 	Sub_Process_2<FX_Delay>	Sub_Process;
-	int											_input_, _output_, _delay_;	// for sub process
+	int											sp_input, sp_output, sp_delay;	// for sub process
 
 	FX_Delay():
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
 		Buffer( FX_DELAY_BUFFER_LENGTH ),
-		Sub_Process( this )
+		Sub_Process( this ),
+		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
 		LPF_Pre 	= LPF_Params;
 		LPF_Post 	= LPF_Params;
@@ -39,24 +40,24 @@ struct FX_Delay : public FX_Interface
 
 	void SUB_PROCESS_0( int v )
 	{
-		_input_ = v;
+		sp_input = v;
 
 		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) );
 
-		_delay_ = Buffer.Get_Value();
+		sp_delay = Buffer.Get_Value();
 	}
 
 	int SUB_PROCESS_1()
 	{
-		_input_	-= Feedback.Per( _delay_ );
-		_output_ = Mix_Level.Per( _delay_ );
+		sp_input	-= Feedback.Per( sp_delay );
+		sp_output = Mix_Level.Per( sp_delay );
 
-		_input_  = LIMIT_INT16( _input_ );
-		_output_ = LIMIT_INT16( _output_ );
+		sp_input  = LIMIT_INT16( sp_input );
+		sp_output = LIMIT_INT16( sp_output );
 
-		Buffer.Set_Value( _input_ );
+		Buffer.Set_Value( sp_input );
 
-		return _output_;
+		return sp_output;
 	}
 
 	int Process( int input )
@@ -75,7 +76,7 @@ struct FX_Delay : public FX_Interface
 
 	void Set_Param_3( int ms )
 	{
-		int	length = _MS_2_LENGTH( ms, _FS_ );
+		int	length = _MS_2_LENGTH( ms, _FS_/FS_RATIO );
 		length = Limit<int>( 1, length, Buffer.Memory.Length-1 );
 		Time_Length.Set_Value( Map( length, 1, Buffer.Memory.Length-1, 0, UINT12_MAX ) );
 	}
@@ -95,6 +96,10 @@ struct FX_Delay : public FX_Interface
 		Buffer.Fast_Forward();
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
+		Sub_Process.Reset();
+		sp_input = sp_output = sp_delay = 0;
 	}
 };
 

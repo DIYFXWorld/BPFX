@@ -12,30 +12,31 @@
 
 struct FX_Modulation_Delay : public FX_Interface
 {
+	Sub_Process_4<FX_Modulation_Delay>	Sub_Process;
+	int																	sp_input, sp_output, sp_wet, sp_fb;
+
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 5000.f, 1.f );
 
-	static const int	FS_RATIO	= 4;
-	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH(  20, _FS_/FS_RATIO );
+	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH(  20, FS_DIV_4 );
 	static const int	DELAY_BUFFER_LENGTH = FX_MODULATION_DELAY_BUFFER_LENGTH;
 
 	Modulation_Delay_Buffer			Buffer;
-	Q15T_LFO										LFO;
-	Volume<Curve_F>							Rate;				// Control_0
-	Volume<Curve_B>							Delay_Time;	// Control_1
-	Volume<Curve_F>							Depth;			// Control_2
-	Volume<Curve_B>							Feedback;		// Control_3
-	Volume<Curve_B>							Mix_Level;	// Control_4
+
+	Q15T_LFO<FS_DIV_4>		LFO;
+
+	Volume<Curve_F>		Rate;				// Control_0
+	Volume<Curve_B>		Delay_Time;	// Control_1
+	Volume<Curve_F>		Depth;			// Control_2
+	Volume<Curve_B>		Feedback;		// Control_3
+	Volume<Curve_B>		Mix_Level;	// Control_4
 
 	Q15T_BQF					LPF_0, LPF_1;
 
-	Sub_Process_4<FX_Modulation_Delay>	Sub_Process;
-	int																	m_input, m_output, m_wet, m_fb;
-
 	FX_Modulation_Delay():
-		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
-		LFO( _FS_/FS_RATIO, int16_t_Sin_Table ),
 		Sub_Process( *this ),
-		m_input( 0 ), m_output( 0 ), m_wet( 0 ), m_fb( 0 )
+		sp_input( 0 ), sp_output( 0 ), sp_wet( 0 ), sp_fb( 0 ),
+		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
+		LFO( int16_t_Sin_Table )
 	{
 		LPF_0 = LPF_Params;
 		LPF_1 = LPF_Params;
@@ -43,7 +44,7 @@ struct FX_Modulation_Delay : public FX_Interface
 
 	void SUB_PROCESS_0( int input )
 	{
-		m_input = input;
+		sp_input = input;
 
 		int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 2, UINT12_MAX );
 		LFO.Set_Rate( Fraction( v, 300 ) );
@@ -57,21 +58,21 @@ struct FX_Modulation_Delay : public FX_Interface
 		Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_TIME;
 		int		m			= t.to_int();
 		Q15T	delta	= t - Q15T( m );
-		m_wet = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
+		sp_wet = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
 	}
 
 	void SUB_PROCESS_2()
 	{
-		m_fb = m_input - Feedback.Per( m_wet );
-		m_fb = LIMIT_INT16( m_fb );
+		sp_fb = sp_input - Feedback.Per( sp_wet );
+		sp_fb = LIMIT_INT16( sp_fb );
 	}
 
 	int SUB_PROCESS_3()
 	{
-		Buffer.Set_Value( m_fb );
-		m_wet = Mix_Level.Per( m_wet );
-		m_wet = LIMIT_INT16( m_wet );
-		return m_wet;
+		Buffer.Set_Value( sp_fb );
+		sp_wet = Mix_Level.Per( sp_wet );
+		sp_wet = LIMIT_INT16( sp_wet );
+		return sp_wet;
 	}
 
 	int Process( int input )
@@ -105,6 +106,9 @@ struct FX_Modulation_Delay : public FX_Interface
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
 		Buffer.Memory.Reset();
+		LPF_0.Reset();
+		LPF_1.Reset();
+		sp_input = sp_output = sp_wet = sp_fb = 0;
 	}
 };
 

@@ -10,6 +10,8 @@
 
 struct FX_Delay_0 : public FX_Interface
 {
+	static const int			FS_RATIO	= 1;
+
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 20000.f, 0.75f );
 
 	//	static const int		BUFFER_LENGTH	= FX_DELAY_0_BUFFER_LENGTH;
@@ -18,7 +20,7 @@ struct FX_Delay_0 : public FX_Interface
 	Volume<Curve_B>			Feedback;
 	Volume<Curve_B>			Mix_Level;
 
-	Delay_Buffer			Buffer;
+	Delay_Buffer				Buffer;
 
 	Q15T_BQF						LPF_Pre, LPF_Post;
 
@@ -78,8 +80,12 @@ struct FX_Delay_0 : public FX_Interface
 		Buffer.Memory.Reset();
 		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) );
 		Buffer.Fast_Forward();
+
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
+
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
 	}
 };
 

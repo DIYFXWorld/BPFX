@@ -12,6 +12,8 @@
 
 struct FX_Reverse_Delay_PCMU : public FX_Interface
 {
+	static const int FS_RATIO = 2;
+	
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
 //	static const int 						BUFFER_LENGTH	= 7950*2;
@@ -23,25 +25,25 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 	Reverse_Delay_Buffer_PCMU		Buffer;
 	Type_Mute										Mute;
 
-	Q15T_BQF										LPF_0, LPF_1;
+	Q15T_BQF										LPF_Pre, LPF_Post;
 
 	Sub_Process_2<FX_Reverse_Delay_PCMU>	Sub_Process;
-	int	m_input, m_output, m_delay;
+	int																		sp_input, sp_output, sp_delay;
 
 	FX_Reverse_Delay_PCMU():
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
 		Buffer( FX_REVERSE_DELAY_PCMU_BUFFER_LENGTH ),
 		Mute( 40 ),
 		Sub_Process( this ),
-		m_input( 0 ), m_output( 0 ), m_delay( 0 )
+		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
-		LPF_0 = LPF_Params;
-		LPF_1 = LPF_Params;
+		LPF_Pre		= LPF_Params;
+		LPF_Post	= LPF_Params;
 	}
 
 	void SUB_PROCESS_0( int input )
 	{
-		m_input = input;
+		sp_input = input;
 
 		Buffer.Set_Length( Time_Length.Get_Value() );
 
@@ -53,32 +55,26 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 			if( Buffer.Direction < 0 )
 				Mute.Start();
 
-		m_delay = Buffer.Get_Value();
-		m_delay = Mute.Process( m_delay );
+		sp_delay = Buffer.Get_Value();
+		sp_delay = Mute.Process( sp_delay );
 	}
 
 	int SUB_PROCESS_1()
 	{
-		m_input	-= Feedback.Per( m_delay );
-		m_output = Mix_Level.Per( m_delay );
+		sp_input	-= Feedback.Per( sp_delay );
+		sp_output = Mix_Level.Per( sp_delay );
 
-		m_input  = LIMIT_INT16( m_input );
-		m_output = LIMIT_INT16( m_output );
+		sp_input  = LIMIT_INT16( sp_input );
+		sp_output = LIMIT_INT16( sp_output );
 
-		Buffer.Set_Value( m_input );
+		Buffer.Set_Value( sp_input );
 
-		return m_output;
+		return sp_output;
 	}
 
 	int Process( int input )
 	{
-		input = LPF_0( input );
-
-		int	output = Sub_Process( input );
-
-		output = LPF_1( output );
-
-		return output;
+		return LPF_Post( Sub_Process( LPF_Pre( input ) ) );
 	}
 
 	void Set_Param_0( int v )	{ Feedback.Set_Value( v ); }
@@ -97,14 +93,13 @@ struct FX_Reverse_Delay_PCMU : public FX_Interface
 		Time_Length.Fast_Forward();
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
-
 		Buffer.Clear();
 		Buffer.Set_Length( Time_Length.Get_Value() );
 		Mute.Reset();
-		LPF_0.Reset();
-		LPF_1.Reset();
-		m_input = m_output = m_delay = 0;
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
 		Sub_Process.Reset();
+		sp_input = sp_output = sp_delay = 0;
 	}
 };
 #endif
