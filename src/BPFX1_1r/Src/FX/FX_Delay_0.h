@@ -40,11 +40,9 @@ struct FX_Delay_0 : public FX_Interface
 
 		int	delay = Buffer.Get_Value();
 
-		input += Feedback.Per( delay );
+		input += Feedback * delay;
 
-		int	output	= Mix_Level.Per( delay );
-
-		input  = LIMIT_INT16( input );
+		int	output	= Mix_Level * delay;
 
 		Buffer.Set_Value( input );
 

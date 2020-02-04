@@ -5,15 +5,16 @@
 #include	"Q15T_Wave_Table.h"
 #include	"Fraction.h"
 
+template <int sampling_rate>
 struct Q15T_LFO
 {
-	const Q15T			Wave_Table_Size_Per_Sampling_Rate;
+	static constexpr Q15T			Wave_Table_Size_Per_Sampling_Rate = Q15T( 65535.f / sampling_rate );
+
 				Q15T			Theta;
 				Q15T			Theta_Step;
 	const int16_t* const	Table;
 
-	Q15T_LFO( int sampling_rate, const int16_t* const table ):
-		Wave_Table_Size_Per_Sampling_Rate( 65535.f / sampling_rate ),
+	Q15T_LFO( const int16_t* const table ):
 		Theta( 0 ),
 		Theta_Step( 0 ),
 		Table( table )

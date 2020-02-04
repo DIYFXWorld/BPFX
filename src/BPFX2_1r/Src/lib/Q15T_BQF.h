@@ -70,6 +70,8 @@ public:
 
 	int operator()( int input )
 	{
+		input = LIMIT_INT16( input );
+
 		output	=       ( b0_a0 * input )
 						+ Mul_64( b1_a0, in1    )
 						+ Mul_64( b2_a0, in2    )

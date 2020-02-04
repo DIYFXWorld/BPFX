@@ -7,33 +7,36 @@
 #include <FX_Interface.h>
 #include <Sub_Process.h>
 #include <Q15T_BQF.h>
-#include <Delay_ADPCM_Buffer.h>
+#include <Delay_Buffer_ADPCM.h>
 #include <FX_Config.h>
 
 struct FX_Delay_ADPCM : public FX_Interface
 {
 	static const int FS_RATIO	= 2;
 
-	static constexpr Q15T_BQF_Params LPF_Params   = BQF_LPF( 10000.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params   = BQF_LPF( _FS_/FS_RATIO/2, 0.75f );
 
 	//	static const int			BUFFER_LENGTH	= FX_DELAY_ADPCM_BUFFER_LENGTH;
 
-	int										Time_Length;	// 0...max buffer length
+	int										Time_Length;	// 0...4095
 	Volume<Curve_B>				Feedback;			// 0...4095
 	Volume<Curve_B>				Mix_Level;		// 0...4095
 
-	Delay_ADPCM_Buffer		Buffer;
+	Delay_Buffer_ADPCM		Buffer;
 
 	Q15T_BQF							LPF_Pre, LPF_Post;
 
 	Sub_Process_2<FX_Delay_ADPCM>	Sub_Process;
-	int														sp_input, sp_output, sp_delay;
+	int														sp_input, sp_wet;
+
+	bool									Lock;
 
 	FX_Delay_ADPCM() :
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
 		Buffer( FX_DELAY_ADPCM_BUFFER_LENGTH ),
 		Sub_Process( this ),
-		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
+		sp_input( 0 ), sp_wet( 0 ),
+		Lock( false )
 	{
 		LPF_Pre		= LPF_Params;
 		LPF_Post	= LPF_Params;
@@ -42,27 +45,20 @@ struct FX_Delay_ADPCM : public FX_Interface
 	void SUB_PROCESS_0( int input )
 	{
 		sp_input = input;
-		Buffer.Set_Length( Time_Length );
-		sp_delay = Buffer.Get_Value();
+
+		sp_wet = Buffer.Get_Value();
 	}
 
 	int SUB_PROCESS_1()
 	{
-		sp_input	+= Feedback.Per( sp_delay );
-		sp_output = Mix_Level.Per( sp_delay );
+		Buffer.Set_Value( sp_input - Feedback * sp_wet );
 
-		sp_input  = LIMIT_INT16( sp_input );
-		sp_output = LIMIT_INT16( sp_output );
-
-		Buffer.Set_Value( sp_input );
-
-		return sp_output;
+		return Mix_Level * sp_wet;
 	}
 
 	int Process( int input )
 	{
-		input *= 12;
-		input /= 10;
+		if( Lock )	return 0;
 		return LPF_Post( Sub_Process( LPF_Pre( input ) ) );
 	}
 
@@ -73,20 +69,14 @@ struct FX_Delay_ADPCM : public FX_Interface
 	int Get_Param_1() const	{ return Mix_Level.Initial_Value; }
 
 	void Set_Param_2( int v )
-	{
-		v = v / 10;
-		v = v * 10;
-
-		v = Map( v, 0, UINT12_MAX, 1, Buffer.Memory.Length-1 );
-
-		if( Time_Length != v )
-		{
-			Time_Length = v;
-			Reset();
-		}
+	{ 
+		Lock = true;
+		Time_Length = v;
+		Buffer.Set_Length( Map( v, 0, UINT12_MAX, 2, Buffer.Memory.Length-1 ) );
+		Lock = false;
 	}
 
-	int Get_Param_2() const { return Map( Time_Length, 1, Buffer.Memory.Length-1, 0, UINT12_MAX ); }
+	int Get_Param_2() const { return Time_Length; }
 
 	FX_ID Get_FX_ID() const	{ return FX_ID_Delay_ADPCM; }
 
@@ -94,11 +84,11 @@ struct FX_Delay_ADPCM : public FX_Interface
 	{
 		Feedback.Fast_Forward();
 		Mix_Level.Fast_Forward();
+		Buffer.Set_Length( Map( Time_Length, 0, UINT12_MAX, 2, Buffer.Memory.Length-1 ) );
 		LPF_Pre.Reset();
 		LPF_Post.Reset();
-		Buffer.Reset();
 		Sub_Process.Reset();
-		sp_input = sp_output = sp_delay = 0;
+		sp_input = sp_wet = 0;
 	}
 };
 

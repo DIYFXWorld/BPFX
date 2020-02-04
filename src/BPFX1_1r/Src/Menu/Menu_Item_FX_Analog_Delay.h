@@ -11,7 +11,7 @@ struct Menu_Item_FX_Analog_Delay : public Menu_Item_Interface
 	int8_t	Time, Feedback, Mix_Level;
 
 	Menu_Item_FX_Analog_Delay():
-		Time( 50 ), Feedback( 70 ), Mix_Level( 50 )
+		Time( 50 ), Feedback( 50 ), Mix_Level( 50 )
 	{
 	}
 

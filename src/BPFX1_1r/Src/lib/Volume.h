@@ -38,7 +38,7 @@ public:
 		Current_Value = Expected_Value;
 	}
 
-	inline int Per /*centage*/ ( int v )
+	inline int operator * ( int v )
 	{
 		return v * Get_Value() / CURVE_RADIX;
 	}
@@ -67,9 +67,9 @@ struct Volume_x
 		return Current_Value;
 	}
 
-	inline int Per /*centage*/ ( int v )
+	inline int operator * ( int v )
 	{
-		return v * Current_Value / CURVE_RADIX;
+		return v * Get_Value() / CURVE_RADIX;
 	}
 };
 

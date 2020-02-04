@@ -28,7 +28,7 @@ static const int ADPCM_Step_Size_Table[ 89 ] =
 	{
 	}
 
-	int ADPCM_IMA_Decoder::Process( unsigned char c )
+int ADPCM_IMA_Decoder::operator()( unsigned char c )
 	{
 	 	int step_size = ADPCM_Step_Size_Table[ index ];
 
@@ -60,7 +60,7 @@ static const int ADPCM_Step_Size_Table[ 89 ] =
 	{
 	}
 
-	unsigned char ADPCM_IMA_Encoder::Process( int input )
+	unsigned char ADPCM_IMA_Encoder::operator () ( int input )
 	{
   	unsigned char c;
 		int d = input - sp;

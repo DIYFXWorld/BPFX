@@ -1,15 +1,15 @@
-#ifndef Menu_Item_FX_Flanger_h_
-#define Menu_Item_FX_Flanger_h_
+#ifndef Menu_Item_FX_Flanger_0_h_
+#define Menu_Item_FX_Flanger_0_h_
 
 #include "Myutil.h"
 #include "Menu_Item_Interface.h"
-#include "FX_Flanger.h"
+#include "FX_Flanger_0.h"
 
-struct Menu_Item_FX_Flanger : public Menu_Item_Interface
+struct Menu_Item_FX_Flanger_0 : public Menu_Item_Interface
 {
 	int8_t	Rate, Depth, Mix_Level, Time, Feedback;
 
-	Menu_Item_FX_Flanger():
+	Menu_Item_FX_Flanger_0():
 		Rate( 50 ), Depth( 50 ), Mix_Level( 50 ), Time( 10 ), Feedback( 70 )
 	{
 	}
@@ -46,7 +46,7 @@ struct Menu_Item_FX_Flanger : public Menu_Item_Interface
 
 	virtual FX_Interface* Create_FX()
 	{
-		pFX = new FX_Flanger;
+		pFX = new FX_Flanger_0;
 		Set_Rate( Rate );
 		Set_Depth( Depth );
 		Set_Time( Time );
@@ -78,7 +78,7 @@ struct Menu_Item_FX_Flanger : public Menu_Item_Interface
 
 	virtual void Print_Caption()
 	{
-		print( "Flanger(fc10kHz)" );
+		print( "Flanger(fc20kHz)" );
 	}
 };
 

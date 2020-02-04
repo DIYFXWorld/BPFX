@@ -12,91 +12,64 @@
 
 struct FX_String_Chorus : public FX_Interface
 {
+	Sub_Process_2<FX_String_Chorus>		Sub_Process;
+	int																sp_input, sp_output, sp_a, sp_b;	// for sub process
+
 	static constexpr Q15T_BQF_Params HPF_Params = BQF_HPF(   200.f, 0.75f );
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
-	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_ );
-	static const int	DELAY_BUFFER_LENGTH = _MS_2_LENGTH(  5, _FS_ );
+	static const int	WIDTH = _MS_2_LENGTH( 10, FS_DIV_2 );
+	static const int	DELAY = _MS_2_LENGTH( 7, FS_DIV_2 );
 
 	Chorus_Buffer			Buffer;
-	Q15T_LFO					LFO;
+
+	Q15T_LFO<FS_DIV_2>		LFO;
 
 	Volume<Curve_D>		Rate;
 	Volume<Curve_D>		Depth;
 	Volume<Curve_B>		Mix_Level;
+	Volume<Curve_B>		Delay_Time;
 
-	Q15T_BQF					HPF, LPF;
-
-	Sub_Process_2<FX_String_Chorus>		Sub_Process;
-	int																_input_, _output_;	// for sub process
+	Q15T_BQF					HPF, LPF_Pre, LPF_Post;
 
 	FX_String_Chorus():
-		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
-		LFO( _FS_, int16_t_Modulated_Sin_Table ),
-		Sub_Process( this )
+		Sub_Process( this ),
+		sp_input( 0 ), sp_output( 0 ), sp_a( 0 ), sp_b( 0 ),
+		Buffer( WIDTH*2 + DELAY ),
+		LFO( Modulated_Sin_Table )
 	{
 		Mix_Level.Set_Value( UINT12_MAX*6/10 );
-		HPF = HPF_Params;
-		LPF = LPF_Params;
+		HPF 			= HPF_Params;
+		LPF_Pre 	= LPF_Params;
+		LPF_Post	= LPF_Params;
 	}
 
 	void SUB_PROCESS_0( int input )
 	{
-		_input_ = input;
+		sp_input = input;
 
-		// Set Rate
-		{
-			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 41, UINT12_MAX );
-			LFO.Set_Rate( Fraction( v, 2047 ) );
-		}
+		LFO.Set_Rate( Fraction( Map( Rate.Get_Value(), 0, UINT12_MAX, 41, UINT12_MAX ), 2047 ) );
 
-		Buffer.Set_Value( _input_ );
+		Buffer.Set_Value( sp_input );
 
-		// voice 1
-		{
-			int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-			Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-			int		m			= t.to_int();
-			Q15T	delta	= t - Q15T( m );
-			_output_ = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-		}
-		// voice 2
-		{
-			int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-			Q15T	t			= LFO.Get_Value( Q15T_90R ) * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-			int		m			= t.to_int();
-			Q15T	delta	= t - Q15T( m );
-			_output_ += ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-		}
+		sp_a = Depth * WIDTH;
+		sp_b = WIDTH + DELAY;
+
+		sp_output  = Buffer.Get_Value( LFO.Get_Value()           * sp_a + sp_b );	// voice 1
+		sp_output += Buffer.Get_Value( LFO.Get_Value( Q15T_R90 ) * sp_a + sp_b );	// voice 2
 	}
 
 	int SUB_PROCESS_1()
 	{
-		// voice 3
-		{
-			int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-			Q15T	t			= LFO.Get_Value( Q15T_120R ) * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-			int		m			= t.to_int();
-			Q15T	delta	= t - Q15T( m );
-			_output_ += ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-		}
-		// voice 4
-		{
-			int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-			Q15T	t			= LFO.Get_Value( Q15T_240R ) * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-			int		m			= t.to_int();
-			Q15T	delta	= t - Q15T( m );
-			_output_ += ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-		}
+		sp_output += Buffer.Get_Value( LFO.Get_Value( Q15T_R120 ) * sp_a + sp_b );	// voice 3
+		sp_output += Buffer.Get_Value( LFO.Get_Value( Q15T_R240 ) * sp_a + sp_b );	// voice 4
 
-		_output_ =  Mix_Level.Per( _output_ );
-
-		return _output_;
+		return Mix_Level * sp_output;
 	}
 
 	int Process( int input )
 	{
-		return LPF( Sub_Process( /*HPF*/( input ) ) );
+		return LPF_Post( Sub_Process( LPF_Pre( HPF( input ) ) ) );
 	}
 
 	virtual void Set_Param_0( int v )	{ Rate.Set_Value( Map( v, 0, UINT12_MAX, 5, UINT12_MAX ) ); }
@@ -114,11 +87,16 @@ struct FX_String_Chorus : public FX_Interface
 	{
 		LFO.Reset();
 		HPF.Reset();
-		LPF.Reset();
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
+
 		Rate.Fast_Forward();
 		Depth.Fast_Forward();
 		Mix_Level.Fast_Forward();
+
 		Buffer.Memory.Reset();
+		Sub_Process.Reset();
+		sp_input = sp_output = sp_a = sp_b =0;
 	}
 };
 

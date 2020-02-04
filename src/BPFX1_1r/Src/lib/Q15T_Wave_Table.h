@@ -65,15 +65,15 @@ inline T Interpolate_4_Table( int i, const T* const Table )
 	return Table[ idx ] + ( Table[ idx + 1 ] - Table[ idx ] ) * decimal / 16384;
 }
 
-extern const int16_t	int16_t_Cos_Table[ 256+1 ];
-extern const int16_t	int16_t_Sin_Table[ 256+1 ];
-extern const int16_t	int16_t_Modulated_Sin_Table[ 256+1 ];
+extern const int16_t	Cos_Table[ 256+1 ];
+extern const int16_t	Sin_Table[ 256+1 ];
+extern const int16_t	Modulated_Sin_Table[ 256+1 ];
 
-extern const	Q15T	Q15T_90R;
-extern const	Q15T	Q15T_180R;
-extern const	Q15T	Q15T_120R;
-extern const	Q15T	Q15T_240R;
-extern const	Q15T	Q15T_270R;
+extern const	Q15T	Q15T_R90;
+extern const	Q15T	Q15T_R180;
+extern const	Q15T	Q15T_R120;
+extern const	Q15T	Q15T_R240;
+extern const	Q15T	Q15T_R270;
 
 //////////
 

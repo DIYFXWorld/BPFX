@@ -40,7 +40,7 @@ struct Reverse_Delay_Buffer
 		if( Pointer >= Length )	Reset();
 		if( Pointer <       0 )	Reset();
 
-		Memory[ Pointer ] = v;
+		Memory[ Pointer ] = LIMIT_INT16( v );
 		Pointer += Direction;
 
 		     if( Pointer >= Length )	{ Pointer = Length-1; Direction = -1; }

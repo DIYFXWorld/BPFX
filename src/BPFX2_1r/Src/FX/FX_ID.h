@@ -25,6 +25,7 @@ enum FX_ID
 	FX_ID_Pitch_Shift,
 	FX_ID_Chorus_0,
 	FX_ID_String_Chorus,
+	FX_ID_Flanger_0,
 };
 
 #endif

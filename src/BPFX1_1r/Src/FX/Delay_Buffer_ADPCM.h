@@ -1,27 +1,26 @@
-#ifndef	Two_Tap_Delay_Buffer_h
-#define	Two_Tap_Delay_Buffer_h
+#ifndef	Delay_Buffer_ADPCM_h
+#define	Delay_Buffer_ADPCM_h
 
 #include 	"Array_4bit.h"
 #include 	"Q15T.h"
 #include	<stdint.h>
 #include	"ADPCM_IMA.h"
-#include	"Myutil.h"
+//#include	"ADPCM_YM2608.h"
 
-struct Two_Tap_Delay_Buffer
+struct Delay_Buffer_ADPCM
 {
 	MEMORY_ALLOCATOR_4BIT	Memory;
-	uint32_t		Write_Pointer;
-	uint32_t		Length;
+	uint32_t				Write_Pointer;
+	uint32_t				Length;
 
 	ADPCM_IMA_Encoder		Encode;
-	ADPCM_IMA_Decoder		Decode_0, Decode_1;
+	ADPCM_IMA_Decoder		Decode;
 
-	Two_Tap_Delay_Buffer( uint32_t length ):
+	Delay_Buffer_ADPCM( uint32_t length ) :
 		Memory( length ),
 		Write_Pointer( 0 ),
 		Length( length )
 	{
-		Length = Limit<uint32_t>( 1, Length, Memory.Length - 1 );
 	}
 
 	void Set_Value( const int& v )
@@ -36,27 +35,21 @@ struct Two_Tap_Delay_Buffer
 		int	i = ( int )Write_Pointer - Length;
 		if( i < 0 )	i = Memory.Length + i;
 
-		int v = Decode_0( Memory.Get_Value( i ) );
-
-		i = ( int )Write_Pointer - ( Length / 2 );
-		if( i < 0 )	i = Memory.Length + i;
-
-		v -= Decode_1( Memory.Get_Value( i ) );
-
-		return v;
+		return Decode( Memory.Get_Value( i ) );
 	}
 
 	void Set_Length( uint32_t v )
 	{
-		Length = Limit<uint32_t>( 1, v, Memory.Length - 1 );
+		if( v < 1 )	v = 1;
+		if( v > Memory.Length - 1 )	v = Memory.Length - 1;
+		Length = v;
 		Reset();
 	}
 
 	void Reset( const int& v = 0 )
 	{
 		Encode.Reset();
-		Decode_0.Reset();
-		Decode_1.Reset();
+		Decode.Reset();
 		Memory.Reset( Encode( LIMIT_INT16( v ) ) );
 	}
 };

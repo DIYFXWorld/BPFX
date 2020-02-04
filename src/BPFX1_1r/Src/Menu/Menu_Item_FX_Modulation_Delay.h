@@ -3,14 +3,14 @@
 
 #include "Myutil.h"
 #include "Menu_Item_Interface.h"
-#include "FX_Modulation_delay.h"
+#include "FX_Modulation_Delay.h"
 
 struct Menu_Item_FX_Modulation_Delay : public Menu_Item_Interface
 {
 	int8_t	Time, Feedback, Mix_Level, Rate, Depth;
 
 	Menu_Item_FX_Modulation_Delay():
-		Time( 30 ), Feedback( 70 ), Mix_Level( 50 ), Rate( 50 ), Depth( 50 )
+		Time( 99 ), Feedback( 30 ), Mix_Level( 50 ), Rate( 10 ), Depth( 80 )
 	{
 	}
 
@@ -78,7 +78,7 @@ struct Menu_Item_FX_Modulation_Delay : public Menu_Item_Interface
 
 	virtual void Print_Caption()
 	{
-		print( "Modulation Delay" );
+		print( "Modulation Delay(fc2kHz)" );
 	}
 };
 

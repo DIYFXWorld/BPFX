@@ -1,28 +1,28 @@
-#ifndef	Delay_PCMU_Buffer_h
-#define	Delay_PCMU_Buffer_h
+#ifndef	Delay_Buffer_h
+#define	Delay_Buffer_h
 
-#include 	"Array.h"
-#include 	"Q15T.h"
-#include	<stdint.h>
-#include	"PCMU.h"
+#include "Array.h"
+#include "Q15T.h"
+#include <stdint.h>
+#include "FX_Config.h"
 
-struct Delay_PCMU_Buffer
+struct Analog_Delay_Buffer
 {
-	MEMORY_ALLOCATOR<uint8_t>	Memory;
+	MEMORY_ALLOCATOR<int16_t>	Memory;
 
 	uint32_t	Write_Pointer;
 	Q15T			Read_Pointer;
 	uint32_t	Length;
 
-	Delay_PCMU_Buffer( uint32_t memory_length ):
-		Memory( memory_length ),
-		Write_Pointer( 0 ), Read_Pointer( 0.0 ), Length( 0 )
+	Analog_Delay_Buffer( uint32_t length ):
+		Memory( length ),
+		Write_Pointer( 0 ), Read_Pointer( 0.0 ), Length( length )
 	{
 	}
 
 	void Set_Value( const int16_t& v )
 	{
-		Memory[ Write_Pointer ] = PCMU_Encode( v );
+		Memory[ Write_Pointer ] = v;
 
 		++Write_Pointer;
 
@@ -33,7 +33,7 @@ struct Delay_PCMU_Buffer
 	{
 		int	index = Read_Pointer.to_int();
 
-		int16_t	v = PCMU_Decode( Memory[ index ] );
+		int16_t	v = Memory[ index ];
 
 		Read_Pointer += ( Q15T( Distance() ) / Length );
 
@@ -60,17 +60,6 @@ struct Delay_PCMU_Buffer
 		int	v = Write_Pointer - Read_Pointer.to_int();
 		if( v < 0 )	v += Memory.Length;
 		return v;
-	}
-	
-	void Reset( const int16_t& v = 0 )
-	{
-		uint8_t c = PCMU_Encode( v );
-
-		for( uint32_t i( 0 ); i < Memory.Length; ++i )
-			Memory[ i ] = c;
-
-
-//		Memory.Reset( c );
 	}
 };
 

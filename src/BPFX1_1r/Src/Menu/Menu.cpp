@@ -10,7 +10,7 @@
 #include "Menu_Item_FX_Reverse_Delay_PCMU.h"
 #include "Menu_Item_FX_Modulation_Delay.h"
 
-FX_Menu	Menu( 9 );
+FX_Menu	Menu( 10 );
 
 Menu_Item_FX_None								_Menu_Item_FX_None;
 Menu_Item_FX_Delay_0						_Menu_Item_FX_Delay_0;

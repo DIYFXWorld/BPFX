@@ -32,7 +32,7 @@ struct FX_Analog_Delay : public FX_Interface
 	FX_Analog_Delay():
 		Time_Length( 0 ), Feedback( 0 ), Mix_Level( 0 ),
 		Buffer( FX_ANALOG_DELAY_BUFFER_LENGTH ),
-		Sub_Process( *this ),
+		Sub_Process( this ),
 		sp_input( 0 ), sp_output( 0 ), sp_delay( 0 )
 	{
 		LPF_Pre 	= LPF_Params_0;
@@ -48,22 +48,20 @@ struct FX_Analog_Delay : public FX_Interface
 
 	void SUB_PROCESS_1()
 	{
-		sp_delay = Buffer.Get_Value();
-		sp_input	-= Feedback.Per( sp_delay );
-		sp_output = Mix_Level.Per( sp_delay );
+		sp_delay	= Buffer.Get_Value();
 	}
 
 	void SUB_PROCESS_2()
 	{
-		sp_input = LPF( sp_input );
-		sp_input  = LIMIT_INT16( sp_input );
-		Buffer.Set_Value( sp_input );
+		sp_delay  = LPF( sp_delay );
+		sp_input	-= Feedback * sp_delay;
+		sp_output = Mix_Level * sp_delay;
 	}
 
 	int SUB_PROCESS_3()
 	{
-		sp_output = LIMIT_INT16( sp_output );
-		return sp_output;
+		Buffer.Set_Value( sp_input );
+		return sp_output * (11/10);
 	}
 
 	int Process( int input )

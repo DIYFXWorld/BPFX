@@ -66,8 +66,8 @@
 									<listOptionValue builtIn="false" value="../Inc"/>
 									<listOptionValue builtIn="false" value="../Src"/>
 									<listOptionValue builtIn="false" value="../Src/lib"/>
-									<listOptionValue builtIn="false" value="../Src/Menu"/>
 									<listOptionValue builtIn="false" value="../Src/FX"/>
+									<listOptionValue builtIn="false" value="../Src/Menu"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp.298086925" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp"/>
 							</tool>

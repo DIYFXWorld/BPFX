@@ -15,11 +15,11 @@ struct FX_Chorus_0 : public FX_Interface
 	static constexpr Q15T_BQF_Params HPF_Params = BQF_HPF(   200.f, 0.75f );
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
-	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_ );
-	static const int	DELAY_BUFFER_LENGTH = _MS_2_LENGTH(  5, _FS_ );
+	static const int	WIDTH = MS_2_LENGTH( 10 );
+	static const int	DELAY = MS_2_LENGTH(  5 );
 
 	Chorus_Buffer			Buffer;
-	Q15T_LFO					LFO;
+	Q15T_LFO<_FS_>			LFO;
 
 	Volume<Curve_D>		Rate;
 	Volume<Curve_D>		Depth;
@@ -28,8 +28,8 @@ struct FX_Chorus_0 : public FX_Interface
 	Q15T_BQF					HPF, LPF;
 
 	FX_Chorus_0():
-		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
-		LFO( _FS_, int16_t_Sin_Table )
+		Buffer( WIDTH*2 + DELAY ),
+		LFO( Sin_Table )
 	{
 		Mix_Level.Set_Value( UINT12_MAX*6/10 );
 		HPF = HPF_Params;
@@ -47,21 +47,13 @@ struct FX_Chorus_0 : public FX_Interface
 			LFO.Set_Rate( Fraction( v, 409 ) );
 		}
 
-		int	DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-
 		Buffer.Set_Value( input );
 
-		Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-		int		m			= t.to_int();
-		Q15T	delta	= t - Q15T( m );
-
-		int	output = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-
-		output = LIMIT_INT16( output );
+		int	output = Buffer.Get_Value( LFO.Get_Value() * ( Depth * WIDTH ) + WIDTH + DELAY );
 
 		output = LPF( output );
 
-		output =  Mix_Level.Per( output );
+		output = Mix_Level * output;
 
 		return output;
 	}
@@ -86,6 +78,7 @@ struct FX_Chorus_0 : public FX_Interface
 		Depth.Fast_Forward();
 		Mix_Level.Fast_Forward();
 		Buffer.Memory.Reset();
+		Buffer.Fast_Forward();
 	}
 };
 

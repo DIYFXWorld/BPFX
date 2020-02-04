@@ -117,11 +117,11 @@ constexpr	 int16_t  INT12_MIN		= -2048;
 #define	HI_BIT_12( v )				(( v >> 6 ) & 0x3F )
 #define	LO_BIT_12( v )				( v & 0x3F )
 
+#define	 MS_2_LENGTH( ms )				((ms)*(_FS_)/1000)
 #define	_MS_2_LENGTH( ms, fs )		((ms)*(fs)/1000)
-#define	_LENGTH_2_MS( len, fs )		(1000*(len)/(fs))
 
-#define	MS_2_LENGTH( ms )		((ms)*(FS)/1000)
-#define	LENGTH_2_MS( len )	(1000*(len)/(FS))
+#define	 LENGTH_2_MS( len )				(1000*(len)/(_FS_))
+#define	_LENGTH_2_MS( len, fs )		(1000*(len)/(fs))
 
 #define	MS_TO_UINT12( MS, MS_MAX )	( 4095 * MS / MS_MAX )
 

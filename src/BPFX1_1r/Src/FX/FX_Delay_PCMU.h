@@ -7,21 +7,21 @@
 #include <FX_Interface.h>
 #include <Sub_Process.h>
 #include <Q15T_BQF.h>
-#include <Delay_PCMU_Buffer.h>
+#include <Delay_Buffer_PCMU.h>
 
 struct FX_Delay_PCMU : public FX_Interface
 {
 	static const int FS_RATIO = 2;
 
-	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params   = BQF_LPF( _FS_/FS_RATIO/2, 0.75f );
 
 //	static const int		BUFFER_LENGTH	= FX_DELAY_PCMU_BUFFER_LENGTH;
 
-	Volume_x<Curve_B>		Time_Length;	// 0...max buffer length
+	Volume_x<Curve_B>		Time_Length;	// 0...4095
 	Volume<Curve_B>			Feedback;			// 0...4095
 	Volume<Curve_B>			Mix_Level;		// 0...4095
 
-	Delay_PCMU_Buffer		Buffer;
+	Delay_Buffer_PCMU		Buffer;
 
 	Q15T_BQF						LPF_Pre, LPF_Post;
 
@@ -38,26 +38,20 @@ struct FX_Delay_PCMU : public FX_Interface
 		LPF_Post	= LPF_Params;
 	}
 
-	void SUB_PROCESS_0( int input )
+	void SUB_PROCESS_0( int v )
 	{
-		sp_input = input;
+		sp_input = v;
 
-		Buffer.Set_Length( Time_Length.Get_Value() );
+		Buffer.Set_Length( Map( Time_Length.Get_Value(), 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) );
 
 		sp_delay = Buffer.Get_Value();
 	}
 
 	int SUB_PROCESS_1()
 	{
-		sp_input	+= Feedback.Per( sp_delay );
-		sp_output = Mix_Level.Per( sp_delay );
+		Buffer.Set_Value( sp_input - Feedback * sp_delay );
 
-		sp_input  = LIMIT_INT16( sp_input );
-		sp_output = LIMIT_INT16( sp_output );
-
-		Buffer.Set_Value( sp_input );
-
-		return sp_output;
+		return Mix_Level * sp_delay;
 	}
 
 	int Process( int input )
@@ -66,13 +60,13 @@ struct FX_Delay_PCMU : public FX_Interface
 	}
 
 	void Set_Param_0( int v )	{ Feedback.Set_Value( v ); }
-	int Get_Param_0() const	{ return Feedback.Initial_Value; }
+	int Get_Param_0() const		{ return Feedback.Initial_Value; }
 
 	void Set_Param_1( int v ) { Mix_Level.Set_Value( v ); }
-	int Get_Param_1() const	{ return Mix_Level.Initial_Value; }
+	int Get_Param_1() const		{ return Mix_Level.Initial_Value; }
 
-	void Set_Param_2( int v )	{ Time_Length.Set_Value( Map( v, 0, UINT12_MAX, 1, Buffer.Memory.Length-1 ) ); }
-	int Get_Param_2() const { return Map( Time_Length.Get_Value(), 1, Buffer.Memory.Length-1, 0, UINT12_MAX ); }
+	void Set_Param_2( int v )	{ Time_Length.Set_Value( v );	}
+	int Get_Param_2() const		{ return Time_Length.Initial_Value; }
 
 	FX_ID Get_FX_ID() const	{ return FX_ID_Delay_PCMU; }
 

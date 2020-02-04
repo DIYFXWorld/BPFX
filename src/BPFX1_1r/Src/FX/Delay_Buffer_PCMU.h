@@ -1,19 +1,20 @@
-#ifndef	Chorus_Buffer_h
-#define	Chorus_Buffer_h
+#ifndef	Delay_Buffer_PCMU_h
+#define	Delay_Buffer_PCMU_h
 
 #include "Array.h"
 #include "Q15T.h"
 #include "FX_Config.h"
+#include "PCMU.h"
 
-struct Chorus_Buffer
+struct Delay_Buffer_PCMU
 {
-	Array<int16_t>	Memory;
+	MEMORY_ALLOCATOR<uint8_t>	Memory;
 
-	uint32_t	Length;
-	uint32_t	Write_Pointer;
-	Q15T			Distance;
+	uint32_t		Length;
+	uint32_t		Write_Pointer;
+	Q15T				Distance;
 
-	Chorus_Buffer( uint32_t length ):
+	Delay_Buffer_PCMU( uint32_t length ):
 		Memory( length ),
 		Length( length ),
 		Write_Pointer( 0 ),
@@ -21,9 +22,9 @@ struct Chorus_Buffer
 	{
 	}
 
-	void Set_Value( const int16_t& v )
+	void Set_Value( const int& v )
 	{
-		Memory[ Write_Pointer ] = LIMIT_INT16( v );
+		Memory[ Write_Pointer ] = PCMU_Encode( LIMIT_INT16( v ) );
 
 		++Write_Pointer;
 
@@ -42,7 +43,7 @@ struct Chorus_Buffer
 		int		idx1 = idx0 + 1;
 		if( idx1 == ( int )Memory.Length )	idx1 = 0;
 
-		return Memory[ idx0 ] * dec0 / 32768 + Memory[ idx1 ] * dec1 / 32768;
+		return PCMU_Decode( Memory[ idx0 ] ) * dec0 / 32768 + PCMU_Decode( Memory[ idx1 ] ) * dec1 / 32768;
 	}
 
 	int16_t Get_Value()
@@ -59,6 +60,11 @@ struct Chorus_Buffer
 	}
 
 	void Fast_Forward() { Distance = Q15T( ( int )Length ); }
+	
+	void Reset()
+	{
+		Memory.Reset( PCMU_Encode( 0 ) );
+	}
 };
 
 #endif

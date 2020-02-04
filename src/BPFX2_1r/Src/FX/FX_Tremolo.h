@@ -12,17 +12,16 @@
 
 struct FX_Tremolo : public FX_Interface
 {
-	Volume<Curve_B>		Depth;
-	Volume<Curve_B>		Rate;
-	Q15T_LFO					LFO;
-	Q15T_LFO_Tri			LFO_Tri;
+	Volume<Curve_B>			Depth;
+	Volume<Curve_B>			Rate;
+	Q15T_LFO<_FS_>			LFO;
+	Q15T_LFO_Tri<_FS_>	LFO_Tri;
 
 	enum Type_Mode { triangle = 1, square = 2 };
 	Type_Mode					Mode;
 
 	FX_Tremolo() :
-		LFO( _FS_, int16_t_Sin_Table ),
-		LFO_Tri( _FS_ ),
+		LFO( Sin_Table ),
 		Mode( triangle )
 	{
 		Depth.Set_Value( 50 );
@@ -57,7 +56,7 @@ struct FX_Tremolo : public FX_Interface
 
 		v  = LIMIT_INT16( v );
 
-		return Depth.Per( v );
+		return Depth * v;
 	}
 
 	virtual void Set_Param_0( int v )	{ Rate.Set_Value( Map( v, 0, UINT12_MAX, 1, UINT12_MAX ) ); }

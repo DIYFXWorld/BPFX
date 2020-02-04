@@ -47,7 +47,7 @@ struct Reverse_Delay_Buffer_PCMU
 		if( Pointer >= Length )	Reset();
 		if( Pointer <       0 )	Reset();
 
-		Memory[ Pointer ] = PCMU_Encode( v );
+		Memory[ Pointer ] = PCMU_Encode( LIMIT_INT16( v ) );
 		Pointer += Direction;
 
 		     if( Pointer >= Length )	{ Pointer = Length-1; Direction = -1; }

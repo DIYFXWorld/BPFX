@@ -12,65 +12,49 @@
 
 struct FX_Chorus : public FX_Interface
 {
+	Sub_Process_2<FX_Chorus>		Sub_Process;
+
 	static constexpr Q15T_BQF_Params HPF_Params = BQF_HPF(   200.f, 0.75f );
 	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
 
-	static const int	DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_ );
-	static const int	DELAY_BUFFER_LENGTH = _MS_2_LENGTH(  5, _FS_ );
+	static const int	WIDTH = _MS_2_LENGTH( 10, FS_DIV_2 );
+	static const int	DELAY = _MS_2_LENGTH(  5, FS_DIV_2 );
 
-	Chorus_Buffer			Buffer;
-	Q15T_LFO					LFO;
+	Chorus_Buffer				Buffer;
+	Q15T_LFO<FS_DIV_2>	LFO;
 
 	Volume<Curve_D>		Rate;
 	Volume<Curve_D>		Depth;
 	Volume<Curve_B>		Mix_Level;
 
-	Q15T_BQF					HPF, LPF;
-
-	Sub_Process_2<FX_Chorus>		Sub_Process;
-	int													_input_, _output_;	// for sub process
+	Q15T_BQF					HPF, LPF_Pre, LPF_Post;
 
 	FX_Chorus():
-		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
-		LFO( _FS_, int16_t_Sin_Table ), Sub_Process( this )
+		Sub_Process( this ),
+		Buffer( WIDTH*2 + DELAY ),
+		LFO( Sin_Table )
 	{
 		Mix_Level.Set_Value( UINT12_MAX*6/10 );
-		HPF = HPF_Params;
-		LPF = LPF_Params;
+		HPF      = HPF_Params;
+		LPF_Pre  = LPF_Params;
+		LPF_Post = LPF_Params;
 	}
 
 	void SUB_PROCESS_0( int input )
 	{
-		_input_ = input;
+		LFO.Set_Rate( Fraction( Map( Rate.Get_Value(), 0, UINT12_MAX, 41, UINT12_MAX ), 409 ) );
 
-		// Set Rate
-		{
-			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 41, UINT12_MAX );
-			LFO.Set_Rate( Fraction( v, 409 ) );
-		}
-
-		Buffer.Set_Value( _input_ );
+		Buffer.Set_Value( input );
 	}
 
 	int SUB_PROCESS_1()
 	{
-		int		DEPTH = Depth.Per( DEPTH_BUFFER_LENGTH );
-		Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_BUFFER_LENGTH;
-		int		m			= t.to_int();
-		Q15T	delta	= t - Q15T( m );
-
-		_output_ = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-
-		_output_ = LIMIT_INT16( _output_ );
-
-		_output_ =  Mix_Level.Per( _output_ );
-
-		return _output_;
+		return Mix_Level * Buffer.Get_Value( LFO.Get_Value() * ( Depth * WIDTH ) + WIDTH + DELAY );
 	}
 
 	int Process( int input )
 	{
-		return LPF( Sub_Process( HPF( input ) ) );
+		return LPF_Post( Sub_Process( HPF( LPF_Pre( input ) ) ) );
 	}
 
 	virtual void Set_Param_0( int v )	{ Rate.Set_Value( Map( v, 0, UINT12_MAX, 1, UINT12_MAX ) ); }
@@ -88,11 +72,14 @@ struct FX_Chorus : public FX_Interface
 	{
 		LFO.Reset();
 		HPF.Reset();
-		LPF.Reset();
+		LPF_Pre.Reset();
+		LPF_Post.Reset();
 		Rate.Fast_Forward();
 		Depth.Fast_Forward();
 		Mix_Level.Fast_Forward();
 		Buffer.Memory.Reset();
+		Buffer.Fast_Forward();
+		Sub_Process.Reset();
 	}
 };
 

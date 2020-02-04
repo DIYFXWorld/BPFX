@@ -50,7 +50,7 @@ struct FX_Phaser : public FX_Interface
 	Volume<Curve_C>		Depth;			// Control_2
 	Volume<Curve_B>		Feedback;
 	Volume<Curve_B>		Mix_Level;
-	Q15T_LFO					LFO;
+	Q15T_LFO<_FS_>		LFO;
 	Q15T_BQF					HPF, LPF;
 	uint8_t						num_APF;
 
@@ -58,7 +58,7 @@ struct FX_Phaser : public FX_Interface
 		_fb( 0.2f ),
     _depth( 1.f ),
     _zm1( 0 ),
-		LFO( _FS_, int16_t_Sin_Table ),
+		LFO( Sin_Table ),
 		num_APF( 6 )
 	{
   	Set_Range( Q15T( 200 ), Q15T( 1600 ) );
@@ -127,7 +127,7 @@ struct FX_Phaser : public FX_Interface
     }
   	_zm1 = y;
 
-		int	wet = Mix_Level.Per( y );
+		int	wet = Mix_Level * y;
 
 		wet = LIMIT_INT16( wet );
 

@@ -12,10 +12,10 @@
 struct FX_Ring_Modulation : public FX_Interface
 {
 	Volume<Curve_B>		Frequency;
-	Q15T_LFO					LFO;
+	Q15T_LFO<_FS_>		LFO;
 
 	FX_Ring_Modulation() :
-		LFO( _FS_, int16_t_Sin_Table )
+		LFO( Sin_Table )
 	{
 		Frequency.Set_Value( 50 );
 	}

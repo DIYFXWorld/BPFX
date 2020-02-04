@@ -20,7 +20,7 @@ struct Type_Mute
 		Active		= true;
 	};
 
-	int Process( int v )
+	int operator () ( int v )
 	{
 		if( Active )
 		{

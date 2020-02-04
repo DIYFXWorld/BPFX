@@ -1,17 +1,17 @@
 #include	"Q15T_Wave_Table.h"
 
-const	Q15T	Q15T_90R	( 65535  /4 );
-const	Q15T	Q15T_180R	( 65535  /2 );
-const	Q15T	Q15T_120R	( 65535  /3 );
-const	Q15T	Q15T_240R	( 65535*2/3 );
-const	Q15T	Q15T_270R	( 65535*3/4 );
+const	Q15T	Q15T_R90	( 65535  /4 );
+const	Q15T	Q15T_R180	( 65535  /2 );
+const	Q15T	Q15T_R120	( 65535  /3 );
+const	Q15T	Q15T_R240	( 65535*2/3 );
+const	Q15T	Q15T_R270	( 65535*3/4 );
 
 Q15T Q15T_Get_Wave_Table_Data( uint16_t idx, const int16_t* const Table )
 {
 	return Q15T( Q15T_Raw_Value( Interpolate_256_Table( idx, Table ) ) );
 }
 
-const int16_t	int16_t_Cos_Table[ 257 ] =
+const int16_t	Cos_Table[ 257 ] =
 {
 	 32767,  32758,  32729,  32679,  32610,  32522,  32413,  32286,
 	 32138,  31972,  31786,  31581,  31357,  31114,  30853,  30572,
@@ -48,7 +48,7 @@ const int16_t	int16_t_Cos_Table[ 257 ] =
 	 32767,
 };
 
-const int16_t	int16_t_Sin_Table[ 257 ] =
+const int16_t	Sin_Table[ 257 ] =
 {
 	     0,    804,   1608,   2411,   3212,  4011,    4808,   5602,
 	  6393,   7180,   7962,   8740,   9512, 10279,   11039,  11793,
@@ -85,7 +85,7 @@ const int16_t	int16_t_Sin_Table[ 257 ] =
 	     0,
 };
 
-const int16_t	int16_t_Modulated_Sin_Table[ 257 ] =
+const int16_t	Modulated_Sin_Table[ 257 ] =
 {
 	     0,   2872,   5606,   8073,  10159,  11773,  12853,  13368,
 	 13321,  12749,  11719,  10327,   8689,   6937,   5208,   3639,

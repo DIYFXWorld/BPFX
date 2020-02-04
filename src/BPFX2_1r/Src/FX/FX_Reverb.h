@@ -161,7 +161,7 @@ public:
 
 		m_output = LIMIT_INT16( m_output );
 
-		m_output = Mix_Level.Per( m_output );
+		m_output = Mix_Level * m_output;
 
 		return m_output;
 	}

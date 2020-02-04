@@ -11,7 +11,7 @@ struct Menu_Item_FX_String_Chorus : public Menu_Item_Interface
 	int8_t	Rate, Depth, Mix_Level;
 
 	Menu_Item_FX_String_Chorus():
-		Rate( 5 ), Depth( 80 ), Mix_Level( 60 )
+		Rate( 40 ), Depth( 50 ), Mix_Level( 50 )
 	{
 	}
 
@@ -46,17 +46,17 @@ struct Menu_Item_FX_String_Chorus : public Menu_Item_Interface
 	{
 		switch( c )
 		{
-			case 'R': Set_Rate( v ); 			break;
-			case 'D': Set_Depth( v );			break;
-			case 'M': Set_Mix_Level( v );	break;
+			case 'R': Set_Rate( v ); 				break;
+			case 'D': Set_Depth( v );				break;
+			case 'M': Set_Mix_Level( v );		break;
 		}
 	}
 
 	virtual void Print_Paramaters()
 	{
-		print( "Rate(R) : " );	println( Rate );
-		print( "Depth(D): " );	println( Depth );
-		print( "Mix(M)  : " );	println( Mix_Level );
+		print( "Rate(R) : " );		println( Rate );
+		print( "Depth(D): " );		println( Depth );
+		print( "Mix(M)  : " );		println( Mix_Level );
 	}
 
 	virtual void Print_Caption()

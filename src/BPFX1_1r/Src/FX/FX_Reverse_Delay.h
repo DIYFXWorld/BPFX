@@ -15,7 +15,7 @@ struct FX_Reverse_Delay : public FX_Interface
 {
 	static const int	FS_RATIO	= 2;
 
-	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( 10000.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params = BQF_LPF( _FS_/FS_RATIO/2, 0.75f );
 
 //	static const int				BUFFER_LENGTH	= FX_REVERSE_DELAY_BUFFER_LENGTH;
 
@@ -59,10 +59,10 @@ struct FX_Reverse_Delay : public FX_Interface
 	int SUB_PROCESS_1()
 	{
 		sp_delay = Buffer.Get_Value();
-		sp_delay = Mute.Process( sp_delay );
+		sp_delay = Mute( sp_delay );
 
-		sp_input	-= Feedback.Per( sp_delay );
-		sp_output = Mix_Level.Per( sp_delay );
+		sp_input	-= Feedback * sp_delay;
+		sp_output = Mix_Level * sp_delay;
 
 		sp_input  = LIMIT_INT16( sp_input );
 		sp_output = LIMIT_INT16( sp_output );

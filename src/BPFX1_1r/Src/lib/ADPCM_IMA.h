@@ -9,7 +9,8 @@ struct ADPCM_IMA_Decoder
 
 	ADPCM_IMA_Decoder();
 
-	int Process( unsigned char c );
+	int operator() ( unsigned char c );
+
 	void Reset();
 };
 
@@ -20,7 +21,7 @@ struct ADPCM_IMA_Encoder
 	ADPCM_IMA_Encoder();
 
 
-	unsigned char Process( int input );
+	unsigned char operator() ( int input );
 
 	void Reset();
 };

@@ -13,30 +13,31 @@
 
 struct FX_Flanger : public FX_Interface
 {
-	static constexpr Q15T_BQF_Params LPF_Params		= BQF_LPF( 10000.f, 0.75f );
-	static constexpr Q15T_BQF_Params LPF_Params_2 = BQF_LPF(  8000.f, 0.75f, _FS_/2 );
-
-	static const int		DEPTH_BUFFER_LENGTH = _MS_2_LENGTH( 10, _FS_/2 );
-	static const int		DELAY_BUFFER_LENGTH = _MS_2_LENGTH( 20, _FS_/2 );
-
-	Chorus_Buffer				Buffer;
-	Q15T_LFO						LFO;
-	Volume<Curve_H>			Rate;
-	Volume<Curve_F>			Depth;
-	Volume<Curve_H>			Delay_Time;
-	Volume<Curve_E>			Feedback;
-	Volume<Curve_B>			Mix_Level;
-
-	Q15T_BQF						LPF, LPF_Pre, LPF_Post;
-
 	Sub_Process_2<FX_Flanger>		Sub_Process;
-	int													_input_, DEPTH, DELAY_TIME;	// for sub process
+	int													sp_input;	// for sub process
+	Q15T												sp_t;
+
+	static constexpr Q15T_BQF_Params LPF_Params		= BQF_LPF( 10000.f, 0.75f );
+	static constexpr Q15T_BQF_Params LPF_Params_2 = BQF_LPF(  8000.f, 0.90f, FS_DIV_2 );
+
+	static const int			WIDTH = _MS_2_LENGTH( 10, FS_DIV_2 );
+	static const int			DELAY = _MS_2_LENGTH( 20, FS_DIV_2 );
+
+	Chorus_Buffer					Buffer;
+	Q15T_LFO<FS_DIV_2>		LFO;
+	Volume<Curve_H>				Rate;
+	Volume<Curve_F>				Depth;
+	Volume<Curve_H>				Delay_Time;
+	Volume<Curve_E>				Feedback;
+	Volume<Curve_B>				Mix_Level;
+
+	Q15T_BQF							LPF, LPF_Pre, LPF_Post;
 
 	FX_Flanger() :
-		Buffer( DEPTH_BUFFER_LENGTH*2 + DELAY_BUFFER_LENGTH ),
-		LFO( _FS_/2, int16_t_Sin_Table ),
-	Sub_Process( this )
-	
+		Sub_Process( this ),
+		sp_input( 0 ), sp_t( 0 ),
+		Buffer( WIDTH*2 + DELAY ),
+		LFO( Sin_Table )
 	{
 		LPF_Pre		= LPF_Params;
 		LPF_Post	= LPF_Params;
@@ -46,42 +47,22 @@ struct FX_Flanger : public FX_Interface
 
 	void SUB_PROCESS_0( int v )
 	{
-		_input_ = v;
+		sp_input = v;
 
-		// Set Rate
-		{
-			int v = Map( Rate.Get_Value(), 0, UINT12_MAX, 41 ,UINT12_MAX );
-			LFO.Set_Rate( Fraction( v, 409 ) );
-		}
+		LFO.Set_Rate( Fraction( Map( Rate.Get_Value(), 0, UINT12_MAX, 41 ,UINT12_MAX ), 409 ) );
 
-		DEPTH				= Depth.Per( DEPTH_BUFFER_LENGTH );
-		DELAY_TIME	= Delay_Time.Per( DELAY_BUFFER_LENGTH );
+		sp_t = LFO.Get_Value() * ( Depth * WIDTH ) + WIDTH + ( Delay_Time * DELAY );
 	}
 
 	int SUB_PROCESS_1()
 	{
-		int	output;
+		int output = Buffer.Get_Value( sp_t );
 
-		{
-			Q15T	t			= LFO.Get_Value() * DEPTH + (DEPTH+1) + DELAY_TIME;
-			int		m			= t.to_int();
-			Q15T	delta	= t - Q15T( m );
-			output = ( delta * Buffer.Get_Value( m + 1 ) +	( Q15T_1 - delta ) * Buffer.Get_Value( m ) ).to_int();
-		}
+		int fb = Limit<-10000,10000>( sp_input - Feedback * output );
 
-		output = LIMIT_INT16( output );
+		Buffer.Set_Value( LPF( fb ) );
 
-		int	fb = _input_ - Feedback.Per( output );
-
-		fb = LIMIT_INT16( fb );
-
-		fb = LPF( fb );
-
-		Buffer.Set_Value( fb );
-
-		output = Mix_Level.Per( output );
-
-		return output;
+		return Mix_Level * output;
 	}
 
 	int Process( int input )
@@ -119,6 +100,8 @@ struct FX_Flanger : public FX_Interface
 		LPF_Pre.Reset();
 		LPF_Post.Reset();
 		Sub_Process.Reset();
+		sp_input = 0;
+		sp_t.Value = 0;
 	}
 };
 

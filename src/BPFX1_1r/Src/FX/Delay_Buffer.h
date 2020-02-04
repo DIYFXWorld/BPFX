@@ -3,64 +3,62 @@
 
 #include "Array.h"
 #include "Q15T.h"
-#include <stdint.h>
 #include "FX_Config.h"
 
 struct Delay_Buffer
 {
 	MEMORY_ALLOCATOR<int16_t>	Memory;
 
-	uint32_t	Write_Pointer;
-	Q15T			Read_Pointer;
 	uint32_t	Length;
+	uint32_t	Write_Pointer;
+	Q15T			Distance;
 
 	Delay_Buffer( uint32_t length ):
 		Memory( length ),
-		Write_Pointer( 0 ), Read_Pointer( 0.0 ), Length( length )
+		Length( length ),
+		Write_Pointer( 0 ),
+		Distance( ( int )length )
 	{
 	}
 
-	void Set_Value( const int16_t& v )
+	void Set_Value( const int& v )
 	{
-		Memory[ Write_Pointer ] = v;
+		Memory[ Write_Pointer ] = LIMIT_INT16( v );
 
 		++Write_Pointer;
 
 		if( Write_Pointer == Memory.Length )	Write_Pointer = 0;
 	}
 
+	int16_t Get_Value( const Q15T& distance )
+	{
+		int		idx0 = distance.Value >> 15;
+		int		dec0 = distance.Value & 0x7FFF;
+		int		dec1 = 32767 - dec0;
+
+		idx0 = Write_Pointer - idx0;
+		if( idx0 < 0 )	idx0 += Memory.Length;
+
+		int		idx1 = idx0 + 1;
+		if( idx1 == ( int )Memory.Length )	idx1 = 0;
+
+		return Memory[ idx0 ] * dec0 / 32768 + Memory[ idx1 ] * dec1 / 32768;
+	}
+
 	int16_t Get_Value()
 	{
-		int	index = Read_Pointer.to_int();
-
-		int16_t	v = Memory[ index ];
-
-		Read_Pointer += ( Q15T( Distance() ) / Length );
-
-		if( ( uint32_t )Read_Pointer.to_int() >= Memory.Length )	Read_Pointer = Read_Pointer - Memory.Length;
-
-		return v;
+		Distance += ( Q15T( ( int )Length ) - Distance ) / Length;
+		return Get_Value( Distance );
 	}
 
 	void Set_Length( uint32_t v )
 	{
 		if( v < 1 )	v = 1;
-		if( v > Memory.Length - 1 )	v = Memory.Length - 1;
+		if( v > Length - 1 )	v = Memory.Length - 1;
 		Length = v;
 	}
 
-	void Fast_Forward()
-	{
-		Read_Pointer = Q15T( int( Write_Pointer - Length ) );
-		if( Read_Pointer.to_int() < 0 )	Read_Pointer = Read_Pointer + Memory.Length;
-	}
-
-	int Distance() const
-	{
-		int	v = Write_Pointer - Read_Pointer.to_int();
-		if( v < 0 )	v += Memory.Length;
-		return v;
-	}
+	void Fast_Forward() { Distance = Q15T( ( int )Length ); }
 };
 
 #endif

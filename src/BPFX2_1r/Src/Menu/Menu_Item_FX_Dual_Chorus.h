@@ -13,8 +13,8 @@ struct Menu_Item_FX_Dual_Chorus : public Menu_Item_Interface
 	int8_t	Mix_Level;
 
 	Menu_Item_FX_Dual_Chorus():
-		Rate_0( 50 ), Depth_0( 20 ),
-		Rate_1( 20 ), Depth_1( 20 ),
+		Rate_0( 60 ), Depth_0( 20 ),
+		Rate_1( 40 ), Depth_1( 20 ),
 		Mix_Level( 70 )
 	{
 	}

@@ -45,8 +45,8 @@ struct Sub_Process_4
 	T&				Owner;
 	int				Output, Count, Last, Sum;
 
-	Sub_Process_4( T& owner ):
-		Owner( owner ),
+	Sub_Process_4( T* owner ):
+		Owner( *owner ),
 		Output( 0 ), Count( 0 ), Last( 0 ), Sum( 0 )
 	{
 	}
